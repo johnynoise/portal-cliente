@@ -1,5 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Estilos padrão do Toast
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Cadastro from './pages/Cadastro';
 import Login from './pages/Login';
@@ -14,7 +16,6 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
-        <Route path="/logout" element={<Login />} /> 
         <Route path="/home" element={<Home />} /> {/* Add Home route */}
       </Routes>
     </BrowserRouter>
