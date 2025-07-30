@@ -20,11 +20,11 @@ function Home() {
     { id: 3, title: 'Suporte', text: 'Precisa de ajuda? Contate nosso suporte.' }
   ];
 
+  // Função para lidar com o logout
   const handleLogout = () => {
-    // aqui vai a lógica de logout
     alert('Logout realizado!');
     // Redirecionar para a página de login
-    window.location.href = '/logout';
+    window.location.href = '/';
   };
 
   return (
