@@ -1,104 +1,71 @@
 import styled from 'styled-components';
-import Background from '../../assets/background.jpg';
 
 export const Container = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #a3c1f7 0%, #fbe7a1 100%);
+  background: linear-gradient(135deg, #004899 0%, #c3d4f7 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 40px 20px;
 `;
 
-
-
-export const Logo = styled.img`
-  width: 300px;
-  margin-bottom: 30px;
-`;
-
-export const Form = styled.form`
-  background-color: #f1f1f1;
-  border-radius: 25px;
-  padding: 40px;
-  max-width: 400px;
+export const Header = styled.header`
   width: 100%;
+  max-width: 1200px;
+  padding: 20px 0;
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
 `;
 
 export const Title = styled.h1`
-  text-align: center;
-  color: #004899;
-  margin-bottom: 10px;
-  font-size: 24px;
+  font-size: 28px;
+  font-weight: bold;
 `;
 
-export const Input = styled.input`
-  height: 40px;
-  padding: 0 20px;
-  border-radius: 30px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-`;
-
-export const Button = styled.button`
-  height: 40px;
-  border-radius: 30px;
+export const LogoutButton = styled.button`
+  background-color: #F5A623;
   border: none;
-  background-color: #004899;
+  padding: 10px 18px;
+  border-radius: 25px;
   color: white;
   font-weight: bold;
-  font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #F5A623;
+    background-color: #e5941a;
   }
+`;
+
+export const Content = styled.main`
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 `;
 
 export const Card = styled.div`
-  background-color: white;
+  background: white;
   border-radius: 16px;
   padding: 20px;
-  width: 100%;
-  max-width: 400px;
-  margin-bottom: 20px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 280px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;
 
-export const CardInfo = styled.div`
-  margin-bottom: 10px;
-
-  p {
-    margin: 4px 0;
-    color: #333;
-    font-size: 14px;
-  }
+export const CardTitle = styled.h2`
+  font-size: 20px;
+  color: #004899;
 `;
 
-export const CardButton = styled(Button)`
-  width: 100%;
-  background-color: #004899;
-
-  &:hover {
-    background-color: #F5A623;
-  }
-`;
-
-export const PasswordRules = styled.div`
-  font-size: 13px;
+export const CardText = styled.p`
+  font-size: 14px;
   color: #333;
-  background-color: #f0f0f0;
-  padding: 10px 15px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  line-height: 1.5;
-  margin-top: -10px;
-  margin-bottom: -10px;
 `;
-

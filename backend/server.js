@@ -1,10 +1,12 @@
 import express from 'express';
 import { PrismaClient } from '../backend/generated/prisma/index.js';
-
+import cors from 'cors';
 const prisma = new PrismaClient();
 
 const app = express();
 app.use(express.json());
+app.use(cors({
+  origin: 'http://localhost:5173'}  ));
 
 
 app.get('/usuarios', async (req, res) => {

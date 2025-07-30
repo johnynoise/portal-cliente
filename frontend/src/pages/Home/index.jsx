@@ -1,67 +1,47 @@
-import React, { useState } from 'react';
-import Trash from '../../assets/wasion.svg';
+import React from 'react';
 import {
   Container,
-  Logo,
-  Form,
+  Header,
   Title,
-  Input,
-  Button,
+  LogoutButton,
+  Content,
   Card,
-  CardInfo,
-  CardButton,
-  PasswordRules
+  CardTitle,
+  CardText
 } from './Home.styles';
 
 function Home() {
-  const [count, setCount] = useState(0);
-  const users = [
-    {
-      id: 1,
-      nome: 'João',
-      email: 'joao@gmail.com',
-      empresa: 'Empresa A'
-    },
-    {
-      id: 2,
-      nome: 'Johny',
-      email: 'johny@gmail.com',
-      empresa: 'Empresa B'
-    }
+  const user = { name: 'Johny' };
+
+  // Exemplo de cards de info (pode alterar conforme sua necessidade)
+  const cards = [
+    { id: 1, title: 'Bem-vindo', text: `Olá, ${user.name}!` },
+    { id: 2, title: 'Status da Conta', text: 'Sua conta está ativa.' },
+    { id: 3, title: 'Suporte', text: 'Precisa de ajuda? Contate nosso suporte.' }
   ];
+
+  const handleLogout = () => {
+    // aqui vai a lógica de logout
+    alert('Logout realizado!');
+    // Redirecionar para a página de login
+    window.location.href = '/logout';
+  };
 
   return (
     <Container>
-      <Logo src={Trash} alt="Logo" />
-      <Form>
-        <Title>Cadastro de Usuários</Title>
-        <Input name='nome' placeholder='Nome Completo' type='text' />
-        <Input name='email' placeholder='Email Válido' type='email' />
-        <Input name='empresa' placeholder='Empresa' type='text' />
-        <Input name='telefone' placeholder='(xx) xxxxx-xxxx' type='tel' />
-        <Input name='nome' placeholder='Senha' type='password' />
-        <PasswordRules>
-          • Mínimo 8 caracteres<br />
-          • Pelo menos uma letra maiúscula<br />
-          • Pelo menos um número<br />
-          • Um caractere especial (!@#$%)
-        </PasswordRules>
-        <Input name='nome' placeholder='Confirme a Senha' type='password' />
-        <text></text>
-        <Button type='button'>Cadastrar</Button>
-      </Form>
-      {/*  
-      {users.map(user => (
-        <Card key={user.id}>
-          <CardInfo>
-            <p>Nome: {user.nome}</p>
-            <p>Email: {user.email}</p>
-            <p>Empresa: {user.empresa}</p>
-          </CardInfo>
-          <CardButton>Apagar</CardButton>
-        </Card>
-      ))}
-        */}
+      <Header>
+        <Title>Portal do Cliente</Title>
+        <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
+      </Header>
+
+      <Content>
+        {cards.map(card => (
+          <Card key={card.id}>
+            <CardTitle>{card.title}</CardTitle>
+            <CardText>{card.text}</CardText>
+          </Card>
+        ))}
+      </Content>
     </Container>
   );
 }

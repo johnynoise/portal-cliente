@@ -23,8 +23,8 @@ function Login() {
         <Input type="email" placeholder="Email" name="email" />
         <Input type="password" placeholder="Senha" name="senha" />
         <Link>Esqueceu a senha?</Link>
-        <Button type="submit">Entrar</Button>
-        <SecondaryButton type="button" onClick={() => navigate('/home')}>
+        <Button type="submit" onClick={() => navigate('/home')}>Entrar</Button>
+        <SecondaryButton type="button" onClick={() => navigate('/cadastro')}>
           Criar Conta
         </SecondaryButton>
 
