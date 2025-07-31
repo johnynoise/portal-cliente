@@ -8,6 +8,7 @@ import Cadastro from './pages/Cadastro';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import PrivateRoute from './routes/PrivateRoutes';
+import NotFound from './pages/NotFound'; // <-- nova importação
 
 import './index.css';
 
@@ -24,8 +25,11 @@ createRoot(document.getElementById('root')).render(
               <Home />
             </PrivateRoute>
           }
+
         />
+        <Route path="*" element={<NotFound />} /> {/* <- pega qualquer rota inválida */}
       </Routes>
+
       <ToastContainer position="top-right" autoClose={3000} />
     </BrowserRouter>
   </StrictMode>
