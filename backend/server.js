@@ -3,6 +3,8 @@ import { PrismaClient } from '../backend/generated/prisma/index.js';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import validator from 'validator';
+
 
 const prisma = new PrismaClient();
 
@@ -14,13 +16,32 @@ app.use(cors({
 
 const SECRET = 'sua_chave_secreta_forte'; // use variável ambiente em produção
 
+function verificarToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Formato esperado: Bearer TOKEN
+
+  if (!token) {
+    return res.status(401).json({ error: 'Token não fornecido.' });
+  }
+
+  jwt.verify(token, SECRET, (err, usuarioDecodificado) => {
+    if (err) {
+      return res.status(403).json({ error: 'Token inválido ou expirado.' });
+    }
+
+    req.usuario = usuarioDecodificado; // passa o usuário para o próximo handler
+    next();
+  });
+}
+
+
 // Retorna todos os usuários
-app.get('/usuarios', async (req, res) => {
+app.get('/usuarios', verificarToken, async (req, res) => {
   const users = await prisma.user.findMany();
   res.json(users);
 });
 // Deleta um usuário pelo ID
-app.delete('/usuarios/:id', async (req, res) => {
+app.delete('/usuarios/:id',verificarToken, async (req, res) => {
   const { id } = req.params;
   try {
     await prisma.user.delete({ where: { id } });
@@ -31,18 +52,33 @@ app.delete('/usuarios/:id', async (req, res) => {
 });
 // Cria um novo usuário
 app.post('/usuarios', async (req, res) => {
-  const { email, name, empresa, password, telefone } = req.body;
+  let { email, name, empresa, password, telefone } = req.body;
 
-  // Verifica se a senha foi enviada
+  // Sanitize
+  email = validator.normalizeEmail(email || '');
+  name = validator.escape(name || '');
+  empresa = validator.escape(empresa || '');
+  telefone = validator.blacklist(telefone || '', '<>/"\''); // remove caracteres perigosos
+
+  // Validar email
+  if (!validator.isEmail(email)) {
+    return res.status(400).json({ error: 'Email inválido.' });
+  }
+
+  // Validar campos obrigatórios
+  if (!name || !empresa || !telefone) {
+    return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
+  }
+
+  // Validar senha
   if (typeof password !== 'string' || password.trim() === '') {
     return res.status(400).json({ error: 'Senha obrigatória.' });
   }
 
-  // Verifica se a senha cumpre as regras
   const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
   if (!passwordRegex.test(password)) {
     return res.status(400).json({
-      error: 'A senha não atende aos requisitos: mínimo 8 caracteres, pelo menos uma letra maiúscula, um número e um caractere especial (!@#$%).'
+      error: 'A senha deve ter no mínimo 8 caracteres, uma letra maiúscula, um número e um caractere especial (!@#$%).'
     });
   }
 
@@ -58,12 +94,12 @@ app.post('/usuarios', async (req, res) => {
         password: hashedPassword,
       }
     });
-    res.status(201).send('User added successfully!');
+    res.status(201).send('Usuário cadastrado com sucesso!');
   } catch (err) {
-    // Mostra a mensagem de erro do backend
-    res.status(500).json({ error: 'Erro no servidor.' });
+    res.status(500).json({ error: err.message });
   }
 });
+
 
 // Login
 app.post('/login', async (req, res) => {
