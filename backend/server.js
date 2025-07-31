@@ -14,12 +14,12 @@ app.use(cors({
 
 const SECRET = 'sua_chave_secreta_forte'; // use variável ambiente em produção
 
-// Suas rotas de usuário existentes
+// Retorna todos os usuários
 app.get('/usuarios', async (req, res) => {
   const users = await prisma.user.findMany();
   res.json(users);
 });
-
+// Deleta um usuário pelo ID
 app.delete('/usuarios/:id', async (req, res) => {
   const { id } = req.params;
   try {
@@ -29,7 +29,7 @@ app.delete('/usuarios/:id', async (req, res) => {
     res.status(500).json({ error: 'Erro ao apagar usuário.' });
   }
 });
-
+// Cria um novo usuário
 app.post('/usuarios', async (req, res) => {
   const { email, name, empresa, password, telefone } = req.body;
 
