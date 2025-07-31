@@ -61,7 +61,7 @@ app.post('/usuarios', async (req, res) => {
     res.status(201).send('User added successfully!');
   } catch (err) {
     // Mostra a mensagem de erro do backend
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Erro no servidor.' });
   }
 });
 
