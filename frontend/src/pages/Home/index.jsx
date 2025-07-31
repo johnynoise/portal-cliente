@@ -1,9 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import LogoImage from '../../assets/wasion.svg';
 
 import {
   Container,
-  Header,
+  Navbar,
+  LogoWrapper,
+  Logo,
   Title,
   LogoutButton,
   Content,
@@ -16,27 +19,26 @@ function Home() {
   const navigate = useNavigate();
   const user = { name: 'Johny' };
 
-  // Exemplo de cards de info (pode alterar conforme sua necessidade)
   const cards = [
     { id: 1, title: 'Bem-vindo', text: `Olá, ${user.name}!` },
     { id: 2, title: 'Status da Conta', text: 'Sua conta está ativa.' },
     { id: 3, title: 'Suporte', text: 'Precisa de ajuda? Contate nosso suporte.' }
   ];
 
-  // Função para lidar com o logout
   function handleLogout() {
-
-    // Remove o token do localStorage e redireciona para a página de login
     localStorage.removeItem('token');
     navigate('/');
   }
 
   return (
     <Container>
-      <Header>
+      <Navbar>
+        <LogoWrapper>
+          <Logo src={LogoImage} alt="Logo da Aplicação" />
+        </LogoWrapper>
         <Title>Portal do Cliente</Title>
         <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
-      </Header>
+      </Navbar>
 
       <Content>
         {cards.map(card => (

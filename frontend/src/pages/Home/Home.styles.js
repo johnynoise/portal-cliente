@@ -1,71 +1,74 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  min-height: 100vh;
-  background: linear-gradient(135deg, #004899 0%, #c3d4f7 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 40px 20px;
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 `;
 
-export const Header = styled.header`
-  width: 100%;
-  max-width: 1200px;
-  padding: 20px 0;
+export const Navbar = styled.header`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  color: white;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  border-bottom: 2px solid #ddd;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+`;
+
+export const LogoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const Logo = styled.img`
+  height: 40px;
 `;
 
 export const Title = styled.h1`
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #222;
+  flex: 1;
+  text-align: center;
+  margin: 0;
 `;
 
 export const LogoutButton = styled.button`
-  background-color: #F5A623;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 25px;
+  background-color: #e74c3c;
   color: white;
-  font-weight: bold;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
-
   &:hover {
-    background-color: #e5941a;
+    background-color: #c0392b;
   }
 `;
 
 export const Content = styled.main`
-  width: 100%;
-  max-width: 1200px;
-  margin-top: 30px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
+  margin-top: 2rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 `;
 
 export const Card = styled.div`
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  width: 280px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 3px 6px rgb(0 0 0 / 0.1);
 `;
 
 export const CardTitle = styled.h2`
-  font-size: 20px;
-  color: #004899;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
 `;
 
 export const CardText = styled.p`
-  font-size: 14px;
-  color: #333;
+  color: #555;
+  line-height: 1.4;
 `;
