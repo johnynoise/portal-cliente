@@ -1,15 +1,15 @@
-// src/routes/PrivateRoute.jsx
+// src/routes/PrivateRoutes.jsx
+import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
 
-  // Se não houver token, redireciona para login
   if (!token) {
-    return <Navigate to="/" />;
+    console.log('Sem token, redirecionando para login');
+    return <Navigate to="/" replace />;
   }
 
-  // Se houver token, renderiza o componente protegido
   return children;
 }
 
