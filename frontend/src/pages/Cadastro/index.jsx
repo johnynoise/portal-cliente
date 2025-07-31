@@ -1,68 +1,62 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Trash from '../../assets/wasion.svg';
-import api from '../../services/api';
+import Trash from '../../assets/wasion.svg';       // Logo da aplicação
+import api from '../../services/api';              // API configurada para requisições HTTP
 
+// Estilos personalizados do componente Cadastro
 import {
   Container,
   Logo,
-  Form,
-  Title,
-  Input,
-  Button,
   Card,
   CardInfo,
   CardButton,
-  PasswordRules,
 } from './Cadastro.styles';
 
-import { SecondaryButton } from '../Login/Login.styles';
+// Componente reutilizável do formulário de cadastro
+import UserForm from '../../components/useForm';
 
-// Importa React Hook Form e Zod para validação de formulário
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { userSchema } from './validationSchema';  // Schema Zod customizado
-
-// Importa Toastify para notificações visuais (toast)
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// Hook para navegação entre páginas
+import { useNavigate } from 'react-router-dom';
 
 function Cadastro() {
-  // Estado para armazenar a lista de usuários cadastrados
+  // Estado para armazenar lista de usuários cadastrados
   const [users, setUsers] = useState([]);
-
-  // Estado para armazenar mensagens de erro de validação (array)
+  
+  // Estado para armazenar mensagens gerais de erro do formulário
   const [formErrors, setFormErrors] = useState([]);
-
-  // Hook para navegação entre páginas
+  
+  // Hook para navegar programaticamente entre rotas
   const navigate = useNavigate();
 
-  // React Hook Form com integração ao Zod para validação automática
-  const {
-    register,           // Função para "registrar" inputs no formulário
-    handleSubmit,       // Função que gerencia o submit do formulário
-    formState: { errors }, // Objeto com erros individuais de cada campo (não usado diretamente aqui)
-    reset,              // Função para limpar o formulário após sucesso
-  } = useForm({
-    resolver: zodResolver(userSchema), // Passa o schema Zod para validação
-  });
-
-  // Ao montar o componente, busca a lista de usuários no backend
+  // useEffect executa apenas uma vez ao montar o componente
+  // para carregar a lista de usuários cadastrados
   useEffect(() => {
     getUsers();
   }, []);
 
-  // Função para buscar usuários via API e atualizar o estado local
+  // Função para buscar os usuários da API
   async function getUsers() {
-    const response = await api.get('/usuarios');
-    setUsers(response.data);
+    try {
+      // Faz a requisição GET para a rota /usuarios
+      const response = await api.get('/usuarios');
+      // Atualiza o estado com os dados retornados
+      setUsers(response.data);
+    } catch {
+      // Aqui você pode tratar erros de requisição (ex: mostrar toast)
+    }
   }
 
-  // Função chamada quando o formulário é enviado e válido
-  async function onSubmit(data) {
-    setFormErrors([]); // Limpa erros anteriores
+  /**
+   * Função chamada quando o formulário é submetido com dados válidos
+   * @param {object} data - Dados do formulário
+   * @param {function} resetForm - Função para resetar o formulário
+   * @param {function} showSuccess - Função para mostrar toast de sucesso
+   * @param {function} showError - Função para mostrar toast de erro
+   */
+  async function onSubmit(data, resetForm, showSuccess, showError) {
+    // Limpa mensagens de erro anteriores
+    setFormErrors([]);
 
-    // Monta o objeto para enviar para o backend
+    // Monta objeto para enviar ao backend
     const newUser = {
       name: data.name,
       email: data.email,
@@ -72,117 +66,101 @@ function Cadastro() {
     };
 
     try {
-      // Envia requisição POST para cadastro
+      // Envia POST para cadastrar novo usuário
       await api.post('/usuarios', newUser);
-
-      // Mostra toast de sucesso
-      toast.success('Usuário cadastrado com sucesso!');
-
-      // Atualiza a lista de usuários para refletir novo cadastro
+      // Mostra notificação de sucesso
+      showSuccess('Usuário cadastrado com sucesso!');
+      // Atualiza a lista local de usuários
       getUsers();
+      // Reseta os campos do formulário para entrada nova
+      resetForm();
 
-      // Limpa o formulário para novo cadastro
-      reset();
-
-      // Redireciona para a tela de login após 3 segundos
+      // Após 3 segundos, redireciona para a página de login
       setTimeout(() => {
         navigate('/');
       }, 3000);
     } catch (err) {
-      // Se backend retornar erro específico, mostra mensagem do backend
+      // Se o backend retornar uma mensagem de erro específica, exibe ela
       if (err.response?.data?.error) {
-        toast.error(err.response.data.error);
+        showError(err.response.data.error);
       } else {
-        // Caso contrário, mostra mensagem genérica
-        toast.error('Erro ao cadastrar. Tente novamente.');
+        // Caso contrário, exibe mensagem genérica
+        showError('Erro ao cadastrar. Tente novamente.');
       }
     }
   }
 
-  // Função chamada quando a validação do Zod falha
-  function onError(formErrorData) {
-    // Extrai todas as mensagens de erro para um array simples
-    const messages = Object.values(formErrorData).map((error) => error.message);
-
-    // Atualiza estado com mensagens para exibir no card de erros
+  /**
+   * Função chamada quando o formulário possui erros de validação
+   * @param {object} errors - Objeto contendo erros do formulário
+   */
+  function onError(errors) {
+    // Extrai as mensagens dos erros e salva no estado para exibição
+    const messages = Object.values(errors).map((e) => e.message);
     setFormErrors(messages);
   }
 
-  // Função para apagar usuário pelo id
+  /**
+   * Função para apagar usuário pelo seu ID
+   * @param {string} userId - ID do usuário para deletar
+   */
   async function deleteUsers(userId) {
-    await api.delete(`/usuarios/${userId}`);
-    getUsers(); // Atualiza lista após exclusão
-
-    // Mostra toast informando exclusão
-    toast.info('Usuário removido.');
+    try {
+      // Envia DELETE para remover usuário
+      await api.delete(`/usuarios/${userId}`);
+      // Atualiza lista após remoção
+      getUsers();
+    } catch {
+      // Tratar erros de exclusão se necessário
+    }
   }
 
   return (
     <Container>
+      {/* Logo no topo da página */}
       <Logo src={Trash} alt="Logo" />
 
-      {/* Formulário com onSubmit que chama onSubmit se válido ou onError se inválido */}
-      <Form onSubmit={handleSubmit(onSubmit, onError)}>
-        <Title>Cadastro de Usuários</Title>
+{/* Exibe mensagens gerais de erro do formulário em um card destacado */}
+{formErrors.length > 0 && (
+  <div
+    style={{
+      background: '#ffe5e5',      // Fundo vermelho claro para destaque de erro
+      padding: '1rem',            // Espaçamento interno
+      borderRadius: '8px',        // Bordas arredondadas
+      marginBottom: '1rem',       // Espaço abaixo do card
+      color: '#c00',              // Cor do texto (vermelho escuro)
+    }}
+  >
+    <strong>Verifique os campos:</strong>
+    <ul style={{ marginTop: '0.5rem', paddingLeft: '1.2rem' }}>
+      {formErrors.map((msg, i) => (
+        <li key={i}>{msg}</li>  // Lista cada mensagem de erro
+      ))}
+    </ul>
+  </div>
+)}
 
-        {/* Card que mostra os erros gerais do formulário */}
-        {formErrors.length > 0 && (
-          <div
-            style={{
-              background: '#ffe5e5',
-              padding: '1rem',
-              borderRadius: '8px',
-              marginBottom: '1rem',
-              color: '#c00',
-            }}
-          >
-            <strong>Verifique os campos:</strong>
-            <ul style={{ marginTop: '0.5rem', paddingLeft: '1.2rem' }}>
-              {formErrors.map((msg, index) => (
-                <li key={index}>{msg}</li>
-              ))}
-            </ul>
-          </div>
-        )}
 
-        {/* Inputs com registro no React Hook Form */}
-        <Input placeholder="Nome Completo" {...register('name')} />
-        <Input placeholder="Email Válido" type="email" {...register('email')} />
-        <Input placeholder="Empresa" {...register('empresa')} />
-        <Input placeholder="(xx) xxxxx-xxxx" type="tel" {...register('telefone')} />
-        <Input placeholder="Senha" type="password" {...register('password')} />
+      {/* Componente do formulário reutilizável */}
+      <UserForm
+        onSubmit={onSubmit}                // Função chamada ao enviar com sucesso
+        onError={onError}                  // Função chamada ao detectar erros
+        submitLabel="Cadastrar"            // Texto do botão submit
+        onNavigateBack={() => navigate('/')}  // Função para botão voltar
+      />
 
-        {/* Regras de senha exibidas abaixo */}
-        <PasswordRules>
-          • Mínimo 8 caracteres<br />
-          • Pelo menos uma letra maiúscula<br />
-          • Pelo menos um número<br />
-          • Um caractere especial (!@#$%)
-        </PasswordRules>
-
-        <Input placeholder="Confirme a Senha" type="password" {...register('confirmPassword')} />
-
-        {/* Botões */}
-        <Button type="submit">Cadastrar</Button>
-        <SecondaryButton type="button" onClick={() => navigate('/')}>
-          Voltar para Login
-        </SecondaryButton>
-      </Form>
-
-      {/* Lista de usuários cadastrados com botão para apagar */}
+      {/* Lista de usuários cadastrados */}
       {users.map((user) => (
         <Card key={user.id}>
           <CardInfo>
             <p>Nome: {user.name}</p>
             <p>Email: {user.email}</p>
             <p>Empresa: {user.empresa}</p>
+            {/* Botão para apagar usuário da lista */}
             <CardButton onClick={() => deleteUsers(user.id)}>Apagar</CardButton>
           </CardInfo>
         </Card>
       ))}
-
-      {/* Container para as notificações toast */}
-      <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
     </Container>
   );
 }
