@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import {
   Container,
   Header,
@@ -11,6 +13,7 @@ import {
 } from './Home.styles';
 
 function Home() {
+  const navigate = useNavigate();
   const user = { name: 'Johny' };
 
   // Exemplo de cards de info (pode alterar conforme sua necessidade)
@@ -21,11 +24,12 @@ function Home() {
   ];
 
   // Função para lidar com o logout
-  const handleLogout = () => {
-    alert('Logout realizado!');
-    // Redirecionar para a página de login
-    window.location.href = '/';
-  };
+  function handleLogout() {
+
+    // Remove o token do localStorage e redireciona para a página de login
+    localStorage.removeItem('token');
+    navigate('/');
+  }
 
   return (
     <Container>
