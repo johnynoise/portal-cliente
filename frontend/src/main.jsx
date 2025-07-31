@@ -8,7 +8,8 @@ import Cadastro from './pages/Cadastro';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import PrivateRoute from './routes/PrivateRoutes';
-import NotFound from './pages/NotFound'; // <-- nova importação
+import NotFound from './pages/NotFound';
+import PublicRoute from './routes/PublicRoute';
 
 import './index.css';
 
@@ -16,8 +17,8 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/cadastro" element={<Cadastro />} />
+        <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/cadastro" element={<PublicRoute><Cadastro /></PublicRoute>} />
         <Route
           path="/home"
           element={
