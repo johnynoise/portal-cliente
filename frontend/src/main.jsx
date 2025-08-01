@@ -12,8 +12,8 @@ import PrivateRoute from './routes/PrivateRoutes';
 import NotFound from './pages/NotFound';
 import PublicRoute from './routes/PublicRoute';
 import Layout from './components/Navbar/LayoutNavbar';
-import AdminProdutos from './pages/Admins/Produtos/adminsProdutos';
-import AdminDashboard from './pages/Admins/AdminDashboard/adminDashboard';
+import AdminProdutos from './pages/Admins/Produtos';
+import AdminDashboard from './pages/Admins/AdminDashboard';
 import './index.css';
 
 createRoot(document.getElementById('root')).render(
@@ -34,14 +34,23 @@ createRoot(document.getElementById('root')).render(
         >
           <Route path="/home" element={<Home />} />
           <Route path="/solucoes-produtos" element={<SolucoesProdutos />} />
-                  <Route
-          path="/admin"
-          element={
-            <PrivateRoute roleRequired={'admin'}>
-              <AdminDashboard />
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute roleRequired={'admin'}>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+
+          />
+          <Route
+            path="/admin/produtos"
+            element={
+              <PrivateRoute roleRequired={'admin'}>
+                <AdminProdutos />
+              </PrivateRoute>
+            }
+          />
         </Route>
 
         {/* Página 404 */}
