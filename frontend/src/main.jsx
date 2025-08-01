@@ -34,7 +34,14 @@ createRoot(document.getElementById('root')).render(
         >
           <Route path="/home" element={<Home />} />
           <Route path="/solucoes-produtos" element={<SolucoesProdutos />} />
-          {/* Adicione mais rotas internas aqui, se quiser */}
+                  <Route
+          path="/admin"
+          element={
+            <PrivateRoute roleRequired={'admin'}>
+              <AdminDashboard />
+            </PrivateRoute>
+          }
+        />
         </Route>
 
         {/* Página 404 */}
@@ -47,14 +54,7 @@ createRoot(document.getElementById('root')).render(
             </PrivateRoute>
           }
         />
-        <Route
-          path="/admin/produtos"
-          element={
-            <PrivateRoute roleRequired={'admin'}>
-              <AdminDashboard />
-            </PrivateRoute>
-          }
-        />
+
       </Routes>
 
       <ToastContainer position="top-right" autoClose={3000} />
