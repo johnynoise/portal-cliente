@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 import {
   Container,
   Title,
@@ -9,33 +11,40 @@ import {
   ProductDescription,
 } from './solucoes.styles';
 
-const products = [
-  {
-    id: 1,
-    name: 'Medidor Smart X1',
-    description: 'Medidor de energia inteligente com comunicação remota.',
-    docUrl: '/docs/medidor-smart-x1',
-  },
-  {
-    id: 2,
-    name: 'Software Gestão Energia',
-    description: 'Sistema para controle e análise de consumo energético.',
-    docUrl: '/docs/software-gestao-energia',
-  },
-  {
-    id: 3,
-    name: 'Sensor IoT',
-    description: 'Sensor para monitoramento em tempo real da rede elétrica.',
-    docUrl: '/docs/sensor-iot',
-  },
-  // Adicione mais produtos aqui
-];
-
 export default function Products() {
+  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  async function fetchProducts() {
+    try {
+      const res = await fetch('http://localhost:3000/produtos', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error('Erro ao carregar produtos');
+
+      const data = await res.json();
+      setProducts(data);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  }
 
   function handleClick(docUrl) {
-    navigate(docUrl);
+    // Se a docUrl for uma URL externa absoluta, usa window.open
+    if (docUrl.startsWith('http')) {
+      window.open(docUrl, '_blank');
+    } else {
+      // Caso seja uma rota interna
+      navigate(docUrl);
+    }
   }
 
   return (
@@ -43,9 +52,9 @@ export default function Products() {
       <Title>Produtos & Soluções</Title>
       <ProductsGrid>
         {products.map(product => (
-          <ProductCard key={product.id} onClick={() => handleClick(product.docUrl)}>
-            <ProductName>{product.name}</ProductName>
-            <ProductDescription>{product.description}</ProductDescription>
+          <ProductCard key={product.id} onClick={() => handleClick(product.linkDocumentacao)}>
+            <ProductName>{product.nome}</ProductName>
+            <ProductDescription>{product.descricao}</ProductDescription>
           </ProductCard>
         ))}
       </ProductsGrid>
