@@ -22,7 +22,7 @@ docker-compose.override.yml
 **/Dockerfile.*
 
 # VSCode (se usar)
-.vscode/
+#.vscode/
 
 # Sistema operacional
 .DS_Store
