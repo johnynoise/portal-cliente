@@ -46,7 +46,7 @@ function AdminProdutos() {
       }
 
       toast.success('Produto adicionado com sucesso!');
-      setForm({ nome: '', descricao: '', urlDoc: '' });
+      setForm({ nome: '', descricao: '', linkDocumentacao: '' });
       navigate('/solucoes-produtos'); // volta para lista de produtos
     } catch (err) {
       toast.error(err.message);
@@ -72,9 +72,9 @@ function AdminProdutos() {
           required
         />
         <Input
-          name="urlDoc"
+          name="linkDocumentacao"
           placeholder="Link da documentação"
-          value={form.urlDoc}
+          value={form.linkDocumentacao}
           onChange={handleChange}
           required
         />

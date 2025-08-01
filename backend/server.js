@@ -42,12 +42,12 @@ function verificarAdmin(req, res, next) {
   next();
 }
 
-// Rotas usuários
+// Rota para listar usuários
 app.get('/usuarios', verificarToken, async (req, res) => {
   const users = await prisma.user.findMany();
   res.json(users);
 });
-
+// Rota para Deletar usuário
 app.delete('/usuarios/:id', verificarToken, async (req, res) => {
   const { id } = req.params;
   try {
@@ -57,7 +57,7 @@ app.delete('/usuarios/:id', verificarToken, async (req, res) => {
     res.status(500).json({ error: 'Erro ao apagar usuário.' });
   }
 });
-
+//Cadastro de usuarios
 app.post('/usuarios', async (req, res) => {
   let { email, name, empresa, password, telefone, role } = req.body;
 
@@ -136,16 +136,17 @@ app.post('/login', async (req, res) => {
 });
 
 // Exemplo de rota protegida para criação de produtos (apenas admin)
-app.post('/produtos', verificarToken, verificarAdmin, async (req, res) => {
-  const { nome, descricao, urlDoc } = req.body;
 
-  if (!nome || !descricao || !urlDoc) {
-    return res.status(400).json({ error: 'Nome, descrição e urlDoc são obrigatórios.' });
+app.post('/produtos', verificarToken, verificarAdmin, async (req, res) => {
+  const { nome, descricao, linkDocumentacao } = req.body;
+
+  if (!nome || !descricao || !linkDocumentacao) {
+    return res.status(400).json({ error: 'Nome, descrição e link são obrigatórios.' });
   }
 
   try {
     const produto = await prisma.produto.create({
-      data: { nome, descricao, urlDoc }
+      data: { nome, descricao, linkDocumentacao }
     });
     res.status(201).json(produto);
   } catch (err) {
@@ -154,10 +155,48 @@ app.post('/produtos', verificarToken, verificarAdmin, async (req, res) => {
 });
 
 // Rota pública para listar produtos
-app.get('/produtos', async (req, res) => {
+app.get('/produtos',verificarToken, async (req, res) => {
   const produtos = await prisma.produto.findMany();
   res.json(produtos);
 });
+// Rota para buscar produto por ID
+app.get('/produtos/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const produto = await prisma.produto.findUnique({ where: { id } });
+    if (!produto) return res.status(404).json({ error: 'Produto não encontrado.' });
+    res.json(produto);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+// Rota para deletar produto
+app.delete('/produtos/:id', verificarToken, verificarAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    await prisma.produto.delete({ where: { id } });
+    res.status(204).send();
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao deletar o produto.' });
+  }
+});
+// Rota para atualizar produto
+app.put('/produtos/:id', verificarToken, verificarAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { nome, descricao, linkDocumentacao } = req.body;
+
+  try {
+    const produto = await prisma.produto.update({
+      where: { id },
+      data: { nome, descricao, linkDocumentacao }
+    });
+    res.json(produto);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
