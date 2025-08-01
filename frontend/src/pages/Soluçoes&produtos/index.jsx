@@ -52,7 +52,7 @@ export default function Products() {
       <Title>Produtos & Soluções</Title>
       <ProductsGrid>
         {products.map(product => (
-          <ProductCard key={product.id} onClick={() => handleClick(product.linkDocumentacao)}>
+          <ProductCard key={product.id} onClick={() => navigate(`/produtos/${product.id}`)}>
             <ProductName>{product.nome}</ProductName>
             <ProductDescription>{product.descricao}</ProductDescription>
           </ProductCard>

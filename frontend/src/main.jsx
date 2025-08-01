@@ -15,6 +15,7 @@ import Layout from './components/Navbar/LayoutNavbar';
 import AdminProdutos from './pages/Admins/Produtos';
 import AdminGerenciarProdutos from './pages/Admins/AdminProdutos';
 import AdminDashboard from './pages/Admins/AdminDashboard';
+import PaginaDefault from './pages/PaginaDefaultProduto';
 import './index.css';
 
 createRoot(document.getElementById('root')).render(
@@ -44,6 +45,7 @@ createRoot(document.getElementById('root')).render(
             }
 
           />
+          <Route path="/produtos/:id" element={<PaginaDefault />} />
           <Route
             path="/admin/produtos"
             element={
@@ -65,6 +67,7 @@ createRoot(document.getElementById('root')).render(
               <AdminProdutos />
             </PrivateRoute>
           }
+          
         />
 
       </Routes>
