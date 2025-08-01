@@ -36,7 +36,6 @@ createRoot(document.getElementById('root')).render(
             </PrivateRoute>
           }
         />
-        <Route path="/suporte" element={<PrivateRoute><div>Suporte</div></PrivateRoute>} />
         <Route path="*" element={<NotFound />} /> {/* <- pega qualquer rota inválida */}
       </Routes>
 
