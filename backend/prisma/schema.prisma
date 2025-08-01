@@ -20,5 +20,6 @@ model User {
   name     String
   empresa  String
   password String
-  telefone String?   // campo adicionado
+  telefone String? 
+  role     String  @default("cliente")
 }
