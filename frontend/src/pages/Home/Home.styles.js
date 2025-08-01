@@ -72,3 +72,21 @@ export const CardText = styled.p`
   color: #555;
   line-height: 1.4;
 `;
+export const NavItems = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-left: 2rem;
+`;
+
+export const NavItem = styled.span`
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #000;
+    text-decoration: underline;
+  }
+`;

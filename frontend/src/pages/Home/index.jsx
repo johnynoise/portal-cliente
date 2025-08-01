@@ -7,6 +7,8 @@ import {
   Navbar,
   LogoWrapper,
   Logo,
+  NavItems,
+  NavItem,
   Title,
   LogoutButton,
   Content,
@@ -36,7 +38,13 @@ function Home() {
         <LogoWrapper>
           <Logo src={LogoImage} alt="Logo da Aplicação" />
         </LogoWrapper>
-        <Title>Portal do Cliente</Title>
+
+        <NavItems>
+          <NavItem onClick={() => navigate('/home')}>Home</NavItem>
+          <NavItem onClick={() => navigate('/arquivos')}>Arquivos</NavItem>
+          <NavItem onClick={() => navigate('/suporte')}>Suporte</NavItem>
+        </NavItems>
+
         <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
       </Navbar>
 
