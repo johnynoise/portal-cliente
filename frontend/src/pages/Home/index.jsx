@@ -40,9 +40,9 @@ function Home() {
         </LogoWrapper>
 
         <NavItems>
-          <NavItem onClick={() => navigate('/home')}>Home</NavItem>
-          <NavItem onClick={() => navigate('/arquivos')}>Arquivos</NavItem>
-          <NavItem onClick={() => navigate('/suporte')}>Suporte</NavItem>
+          <NavItem onClick={() => navigate('/home')}>HOME</NavItem>
+          <NavItem onClick={() => navigate('/solucoes-produtos')}>SOLUÇÕES & PRODUTOS</NavItem>
+          <NavItem onClick={() => navigate('/suporte')}>SUPORTE</NavItem>
         </NavItems>
 
         <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
