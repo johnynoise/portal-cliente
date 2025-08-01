@@ -11,6 +11,7 @@ import SolucoesProdutos from './pages/Soluçoes&produtos';
 import PrivateRoute from './routes/PrivateRoutes';
 import NotFound from './pages/NotFound';
 import PublicRoute from './routes/PublicRoute';
+import Layout from './components/Navbar/LayoutNavbar';
 
 import './index.css';
 
@@ -18,25 +19,25 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
+        {/* Rotas públicas */}
         <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/cadastro" element={<PublicRoute><Cadastro /></PublicRoute>} />
+
+        {/* Rotas protegidas com layout persistente */}
         <Route
-          path="/home"
           element={
             <PrivateRoute>
-              <Home />
+              <Layout />
             </PrivateRoute>
           }
-        />
-        <Route
-          path="/solucoes-produtos"
-          element={
-            <PrivateRoute>
-              <SolucoesProdutos />
-            </PrivateRoute>
-          }
-        />
-        <Route path="*" element={<NotFound />} /> {/* <- pega qualquer rota inválida */}
+        >
+          <Route path="/home" element={<Home />} />
+          <Route path="/solucoes-produtos" element={<SolucoesProdutos />} />
+          {/* Adicione mais rotas internas aqui, se quiser */}
+        </Route>
+
+        {/* Página 404 */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
       <ToastContainer position="top-right" autoClose={3000} />
