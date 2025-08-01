@@ -41,7 +41,7 @@ createRoot(document.getElementById('root')).render(
         <Route
           path="/admin/produtos"
           element={
-            <PrivateRoute>
+            <PrivateRoute roleRequired={'admin'}>
               <AdminProdutos />
             </PrivateRoute>
           }
