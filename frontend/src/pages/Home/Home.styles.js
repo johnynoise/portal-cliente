@@ -1,10 +1,13 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  max-width: 960px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fefefe;
+  display: flex;
+  flex-direction: column;
 `;
+
 
 export const Navbar = styled.header`
   display: flex;
@@ -48,13 +51,13 @@ export const LogoutButton = styled.button`
     background-color: #c0392b;
   }
 `;
-
 export const Content = styled.main`
-  margin-top: 2rem;
+  margin: 2rem;
   display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 `;
+
 
 export const Card = styled.div`
   background-color: #fff;
