@@ -34,20 +34,6 @@ function Home() {
 
   return (
     <Container>
-      <Navbar>
-        <LogoWrapper>
-          <Logo src={LogoImage} alt="Logo da Aplicação" />
-        </LogoWrapper>
-
-        <NavItems>
-          <NavItem onClick={() => navigate('/home')}>HOME</NavItem>
-          <NavItem onClick={() => navigate('/solucoes-produtos')}>SOLUÇÕES & PRODUTOS</NavItem>
-          <NavItem onClick={() => navigate('/suporte')}>SUPORTE</NavItem>
-        </NavItems>
-
-        <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
-      </Navbar>
-
       <Content>
         {cards.map(card => (
           <Card key={card.id}>
