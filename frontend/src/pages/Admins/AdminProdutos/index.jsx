@@ -62,7 +62,7 @@ function AdminGerenciarProdutos() {
     <Container>
       <TopBar>
         <Title>Gerenciar Produtos</Title>
-        <Button onClick={() => navigate('/admin/produtos/adicionar')}>
+        <Button onClick={() => navigate('/admin/produtos/criar')}>
           + Adicionar Produto
         </Button>
       </TopBar>

@@ -56,6 +56,8 @@ createRoot(document.getElementById('root')).render(
 
         {/* Página 404 */}
         <Route path="*" element={<NotFound />} />
+
+        {/* Rota para adicionar um novo produto */}
         <Route
           path="/admin/produtos/criar"
           element={
