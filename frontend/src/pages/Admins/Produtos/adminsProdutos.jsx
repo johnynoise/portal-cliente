@@ -17,7 +17,7 @@ function AdminProdutos() {
   const [form, setForm] = useState({
     nome: '',
     descricao: '',
-    urlDoc: ''
+    linkDocumentacao: ''
   });
 
   function handleChange(e) {
@@ -73,7 +73,7 @@ function AdminProdutos() {
         />
         <Input
           name="linkDocumentacao"
-          placeholder="Link da documentação"
+          placeholder="Link da documentação"  
           value={form.linkDocumentacao}
           onChange={handleChange}
           required

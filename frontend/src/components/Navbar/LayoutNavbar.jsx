@@ -36,7 +36,7 @@ export default function Layout() {
           <NavItem onClick={() => navigate('/suporte')}>Suporte</NavItem>
         </NavItems>
 
-        <AdminButton onClick={() => navigate('/admin/produtos')}>Admin</AdminButton>
+        <AdminButton onClick={() => navigate('/admin/produtos/criar')}>Admin</AdminButton>
 
         <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
       </Navbar>

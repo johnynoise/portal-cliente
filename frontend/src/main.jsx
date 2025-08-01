@@ -12,7 +12,7 @@ import PrivateRoute from './routes/PrivateRoutes';
 import NotFound from './pages/NotFound';
 import PublicRoute from './routes/PublicRoute';
 import Layout from './components/Navbar/LayoutNavbar';
-import AdminProdutos from './pages/Admins/adminsProdutos';
+import AdminProdutos from './pages/Admins/Produtos/adminsProdutos';
 import './index.css';
 
 createRoot(document.getElementById('root')).render(
@@ -39,7 +39,7 @@ createRoot(document.getElementById('root')).render(
         {/* Página 404 */}
         <Route path="*" element={<NotFound />} />
         <Route
-          path="/admin/produtos"
+          path="/admin/produtos/criar"
           element={
             <PrivateRoute roleRequired={'admin'}>
               <AdminProdutos />
