@@ -5,6 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Prisma Studio",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npx",
+            "runtimeArgs": [
+                "prisma",
+                "studio"
+            ],
+            "cwd": "${workspaceFolder}/backend",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Launch React",
             "request": "launch",
             "runtimeArgs": [
@@ -49,11 +64,12 @@
     ],
     "compounds": [
         {
-            "name": "Launch All",
+            "name": "React App + Node-Express + Prisma Studio",
             "configurations": [
                 "Launch Program",
                 "Launch React App",
-                "Launch React"
+                "Launch React",
+                "Prisma Studio"
             ],
             "stopAll": true
         }
