@@ -23,3 +23,12 @@ model User {
   telefone String? 
   role     String  @default("cliente")
 }
+
+model Produto {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  nome             String
+  descricao        String
+  linkDocumentacao String
+  criadoEm         DateTime @default(now())
+}
+
