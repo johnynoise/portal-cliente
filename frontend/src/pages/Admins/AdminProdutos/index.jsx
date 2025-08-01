@@ -1,19 +1,20 @@
-// src/pages/AdminGerenciarProdutos.jsx
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import {
   Container,
   Title,
+  TopBar,
   ProdutoCard,
   ProdutoInfo,
   ButtonGroup,
-  Button,
+  Button
 } from './AdminProdutos.styles';
 
 function AdminGerenciarProdutos() {
   const [produtos, setProdutos] = useState([]);
-
+  const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -59,7 +60,13 @@ function AdminGerenciarProdutos() {
 
   return (
     <Container>
-      <Title>Gerenciar Produtos</Title>
+      <TopBar>
+        <Title>Gerenciar Produtos</Title>
+        <Button onClick={() => navigate('/admin/produtos/adicionar')}>
+          + Adicionar Produto
+        </Button>
+      </TopBar>
+
       {produtos.map((produto) => (
         <ProdutoCard key={produto.id}>
           <ProdutoInfo>
@@ -70,8 +77,10 @@ function AdminGerenciarProdutos() {
             </a>
           </ProdutoInfo>
           <ButtonGroup>
-            {/* Aqui você pode adicionar botão de edição futuramente */}
-            <Button onClick={() => deletarProduto(produto.id)}>Excluir</Button>
+            <Button onClick={() => navigate(`/admin/produtos/editar/${produto.id}`)}>Editar</Button>
+            <Button onClick={() => deletarProduto(produto.id)} style={{ backgroundColor: '#d9534f' }}>
+              Excluir
+            </Button>
           </ButtonGroup>
         </ProdutoCard>
       ))}

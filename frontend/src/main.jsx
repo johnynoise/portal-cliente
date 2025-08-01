@@ -13,6 +13,7 @@ import NotFound from './pages/NotFound';
 import PublicRoute from './routes/PublicRoute';
 import Layout from './components/Navbar/LayoutNavbar';
 import AdminProdutos from './pages/Admins/Produtos';
+import AdminGerenciarProdutos from './pages/Admins/AdminProdutos';
 import AdminDashboard from './pages/Admins/AdminDashboard';
 import './index.css';
 
@@ -47,7 +48,7 @@ createRoot(document.getElementById('root')).render(
             path="/admin/produtos"
             element={
               <PrivateRoute roleRequired={'admin'}>
-                <AdminProdutos />
+                <AdminGerenciarProdutos />
               </PrivateRoute>
             }
           />

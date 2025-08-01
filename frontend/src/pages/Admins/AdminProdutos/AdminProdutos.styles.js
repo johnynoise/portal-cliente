@@ -6,8 +6,15 @@ export const Container = styled.div`
   padding: 1rem;
 `;
 
-export const Title = styled.h1`
+export const TopBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 2rem;
+`;
+
+export const Title = styled.h1`
+  margin: 0;
 `;
 
 export const ProdutoCard = styled.div`
@@ -38,19 +45,19 @@ export const ProdutoInfo = styled.div`
 
 export const ButtonGroup = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
-  align-items: start;
 `;
 
 export const Button = styled.button`
-  background-color: #d9534f;
+  background-color: #007bff;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   cursor: pointer;
   border-radius: 4px;
 
   &:hover {
-    background-color: #c9302c;
+    background-color: #0056b3;
   }
 `;
