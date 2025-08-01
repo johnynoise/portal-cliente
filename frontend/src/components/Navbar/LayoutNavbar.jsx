@@ -11,6 +11,7 @@ import {
   NavItems,
   NavItem,
   LogoutButton,
+  AdminButton
 } from './layout.styles';
 
 export default function Layout() {
@@ -34,6 +35,8 @@ export default function Layout() {
           <NavItem onClick={() => navigate('/arquivos')}>Arquivos</NavItem>
           <NavItem onClick={() => navigate('/suporte')}>Suporte</NavItem>
         </NavItems>
+
+        <AdminButton onClick={() => navigate('/admin/produtos')}>Admin</AdminButton>
 
         <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
       </Navbar>

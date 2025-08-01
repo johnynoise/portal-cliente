@@ -79,3 +79,22 @@ export const LogoutButton = styled.button`
     align-self: flex-end;
   }
 `;
+
+export const AdminButton = styled.button`
+  background-color: #3c56e7ff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #c03a2b91;
+  }
+
+  @media (max-width: 768px) {
+    align-self: flex-end;
+  }
+`;
