@@ -25,6 +25,7 @@ function Home() {
     { id: 1, title: 'Bem-vindo', text: `Olá, ${user.name}!` },
     { id: 2, title: 'Status da Conta', text: 'Sua conta está ativa.' },
     { id: 3, title: 'Suporte', text: 'Precisa de ajuda? Contate nosso suporte.' }
+    
   ];
 
   function handleLogout() {

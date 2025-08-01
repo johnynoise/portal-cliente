@@ -12,7 +12,7 @@ import PrivateRoute from './routes/PrivateRoutes';
 import NotFound from './pages/NotFound';
 import PublicRoute from './routes/PublicRoute';
 import Layout from './components/Navbar/LayoutNavbar';
-
+import AdminProdutos from './pages/Admins/adminsProdutos';
 import './index.css';
 
 createRoot(document.getElementById('root')).render(
@@ -38,6 +38,14 @@ createRoot(document.getElementById('root')).render(
 
         {/* Página 404 */}
         <Route path="*" element={<NotFound />} />
+        <Route
+          path="/admin/produtos"
+          element={
+            <PrivateRoute>
+              <AdminProdutos />
+            </PrivateRoute>
+          }
+        />
       </Routes>
 
       <ToastContainer position="top-right" autoClose={3000} />
