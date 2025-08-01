@@ -107,7 +107,7 @@ app.post('/login', async (req, res) => {
 
   // Busca usuário no banco pelo email
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return res.status(401).json({ error: 'Usuário não encontrado' });
+  if (!user) return res.status(401).json({ error: 'Credenciais Incorretas' });
 
   // Compara senha com hash
   const validPassword = bcrypt.compareSync(password, user.password);
