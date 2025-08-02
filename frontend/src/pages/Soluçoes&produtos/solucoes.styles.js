@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.main`
   margin: 2rem auto;
-  width: 100vw;
+  max-width: 1200px;
   padding: 0 1rem;
   background-color: #fefefe;
   min-height: 100vh;
@@ -16,50 +16,6 @@ export const Title = styled.h1`
   text-align: center;
 `;
 
-export const ProductsGrid = styled.div`
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(5, 1fr); /* máximo 5 por linha */
-`;
-
-export const ProductCard = styled.div`
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 0.8rem;
-  box-shadow: 0 3px 6px rgb(0 0 0 / 0.1);
-  cursor: pointer;
-  transition: box-shadow 0.3s ease;
-
-  &:hover {
-    box-shadow: 0 6px 12px rgb(0 0 0 / 0.15);
-  }
-`;
-
-
-export const ProductImage = styled.img`
-  width: 100%;
-  height: 140px;          /* altura fixa para uniformizar */
-  object-fit: cover;      /* cobre todo o espaço, cortando partes se precisar */
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-`;
-
-
-export const ProductName = styled.h2`
-text-align: center;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 0.4rem;
-`;
-
-export const ProductDescription = styled.p`
-  color: #555;
-  line-height: 1.3;
-  font-size: 0.85rem;
-`;
-
 export const SearchInput = styled.input`
   display: block;
   margin: 0 auto 2rem auto;
@@ -69,4 +25,55 @@ export const SearchInput = styled.input`
   font-size: 1rem;
   border-radius: 6px;
   border: 1px solid #ccc;
+`;
+
+export const ProductsGrid = styled.div`
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(5, 1fr);
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media (max-width: 700px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const ProductCard = styled.div`
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 0.8rem;
+  box-shadow: 0 3px 6px rgb(0 0 0 / 0.1);
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  &:hover {
+    box-shadow: 0 6px 12px rgb(0 0 0 / 0.15);
+  }
+`;
+
+export const ProductImage = styled.img`
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+`;
+
+export const ProductName = styled.h2`
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.4rem;
 `;

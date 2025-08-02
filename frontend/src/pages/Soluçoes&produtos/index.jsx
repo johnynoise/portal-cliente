@@ -8,6 +8,7 @@ import {
   SearchInput,
   ProductsGrid,
   ProductCard,
+  ProductImage,
   ProductName,
 } from './solucoes.styles';
 
@@ -57,10 +58,7 @@ export default function Products() {
         {filteredProducts.map(product => (
           <ProductCard key={product.id} onClick={() => navigate(`/produtos/${product.id}`)}>
             {product.imagemUrl && (
-              <img 
-                src={product.imagemUrl} 
-                alt={product.nome}
-              />
+              <ProductImage src={product.imagemUrl} alt={product.nome} />
             )}
             <ProductName>{product.nome}</ProductName>
           </ProductCard>
