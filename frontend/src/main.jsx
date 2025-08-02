@@ -16,6 +16,7 @@ import AdminProdutos from './pages/Admins/Produtos';
 import AdminGerenciarProdutos from './pages/Admins/AdminProdutos';
 import AdminDashboard from './pages/Admins/AdminDashboard';
 import PaginaDefault from './pages/PaginaDefaultProduto';
+import FAQ from './pages/FAQ/FAQ';
 import './index.css';
 
 createRoot(document.getElementById('root')).render(
@@ -54,6 +55,7 @@ createRoot(document.getElementById('root')).render(
               </PrivateRoute>
             }
           />
+          <Route path="/faq" element={<PrivateRoute><FAQ /></PrivateRoute>} />
         </Route>
 
         {/* Página 404 */}
@@ -67,7 +69,7 @@ createRoot(document.getElementById('root')).render(
               <AdminProdutos />
             </PrivateRoute>
           }
-          
+
         />
 
       </Routes>

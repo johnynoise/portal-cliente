@@ -47,6 +47,7 @@ export default function Layout() {
           <NavItem onClick={() => navigate('/solucoes-produtos')}>Produtos & Soluções</NavItem>
           <NavItem onClick={() => navigate('/arquivos')}>Arquivos</NavItem>
           <NavItem onClick={() => navigate('/suporte')}>Suporte</NavItem>
+          <NavItem onClick={() => navigate('/faq')}>FAQ</NavItem>
         </NavItems>
 
         {isAdmin && (
