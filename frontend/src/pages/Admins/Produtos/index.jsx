@@ -18,7 +18,7 @@ function AdminProdutos() {
     nome: '',
     descricao: '',
     linkDocumentacao: '',
-    imageUrl: ''
+    imagemUrl: '' // ✅ Campo alinhado com backend
   });
 
   const [uploading, setUploading] = useState(false);
@@ -36,8 +36,7 @@ function AdminProdutos() {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', 'portal-clientes'); // Substitua aqui
-    formData.append('cloud_name', 'dnth50woo'); // Substitua aqui
+    formData.append('upload_preset', 'portal-clientes'); // seu upload preset
 
     try {
       const res = await fetch('https://api.cloudinary.com/v1_1/dnth50woo/image/upload', {
@@ -46,7 +45,10 @@ function AdminProdutos() {
       });
 
       const data = await res.json();
-      setForm(prev => ({ ...prev, imageUrl: data.secure_url }));
+
+      if (!data.secure_url) throw new Error('Erro no upload da imagem');
+
+      setForm(prev => ({ ...prev, imagemUrl: data.secure_url })); // ✅ campo corrigido
       toast.success('Imagem enviada com sucesso!');
     } catch (err) {
       toast.error('Erro ao enviar imagem');
@@ -58,6 +60,11 @@ function AdminProdutos() {
   async function handleSubmit(e) {
     e.preventDefault();
     const token = localStorage.getItem('token');
+
+    if (!form.imagemUrl) {
+      toast.error('Envie uma imagem antes de cadastrar o produto');
+      return;
+    }
 
     try {
       const res = await fetch('http://localhost:3000/produtos', {
@@ -79,7 +86,7 @@ function AdminProdutos() {
         nome: '',
         descricao: '',
         linkDocumentacao: '',
-        imageUrl: ''
+        imagemUrl: ''
       });
       navigate('/solucoes-produtos');
     } catch (err) {
@@ -118,8 +125,12 @@ function AdminProdutos() {
           onChange={handleImageUpload}
         />
         {uploading && <p>Enviando imagem...</p>}
-        {form.imageUrl && <p>Imagem carregada ✅</p>}
-
+        {form.imagemUrl && (
+          <>
+            <p>Imagem carregada ✅</p>
+            <img src={form.imagemUrl} alt="Preview" style={{ maxWidth: 200, marginTop: 10 }} />
+          </>
+        )}
         <Button type="submit" disabled={uploading}>Adicionar Produto</Button>
       </Form>
     </Container>

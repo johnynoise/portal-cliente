@@ -138,15 +138,20 @@ app.post('/login', async (req, res) => {
 // Exemplo de rota protegida para criação de produtos (apenas admin)
 
 app.post('/produtos', verificarToken, verificarAdmin, async (req, res) => {
-  const { nome, descricao, linkDocumentacao } = req.body;
+  const { nome, descricao, linkDocumentacao, imageUrl } = req.body;
 
-  if (!nome || !descricao || !linkDocumentacao) {
-    return res.status(400).json({ error: 'Nome, descrição e link são obrigatórios.' });
+  if (!nome || !descricao || !linkDocumentacao || !imageUrl) {
+    return res.status(400).json({ error: 'Todos os campos são obrigatórios, incluindo a imagem.' });
   }
 
   try {
     const produto = await prisma.produto.create({
-      data: { nome, descricao, linkDocumentacao }
+      data: {
+        nome,
+        descricao,
+        linkDocumentacao,
+        imagemUrl: imageUrl
+      }
     });
     res.status(201).json(produto);
   } catch (err) {

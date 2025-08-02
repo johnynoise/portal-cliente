@@ -30,5 +30,6 @@ model Produto {
   descricao        String
   linkDocumentacao String
   criadoEm         DateTime @default(now())
+  imagemUrl       String?
 }
 
