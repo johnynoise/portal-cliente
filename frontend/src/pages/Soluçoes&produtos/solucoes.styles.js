@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.main`
   margin: 2rem auto;
-  max-width: 960px;
+  width: 100vw;
   padding: 0 1rem;
   background-color: #fefefe;
   min-height: 100vh;
@@ -18,14 +18,14 @@ export const Title = styled.h1`
 
 export const ProductsGrid = styled.div`
   display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  grid-template-columns: repeat(5, 1fr); /* máximo 5 por linha */
 `;
 
 export const ProductCard = styled.div`
   background-color: #fff;
   border-radius: 10px;
-  padding: 1.5rem;
+  padding: 0.8rem;
   box-shadow: 0 3px 6px rgb(0 0 0 / 0.1);
   cursor: pointer;
   transition: box-shadow 0.3s ease;
@@ -35,14 +35,24 @@ export const ProductCard = styled.div`
   }
 `;
 
+export const ProductImage = styled.img`
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+`;
+
 export const ProductName = styled.h2`
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #333;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.4rem;
 `;
 
 export const ProductDescription = styled.p`
   color: #555;
-  line-height: 1.4;
+  line-height: 1.3;
+  font-size: 0.85rem;
 `;
