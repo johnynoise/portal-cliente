@@ -138,9 +138,10 @@ app.post('/login', async (req, res) => {
 // Exemplo de rota protegida para criação de produtos (apenas admin)
 
 app.post('/produtos', verificarToken, verificarAdmin, async (req, res) => {
-  const { nome, descricao, linkDocumentacao, imageUrl } = req.body;
+   console.log('Body recebido:', req.body);
+  const { nome, descricao, linkDocumentacao, imagemUrl } = req.body;
 
-  if (!nome || !descricao || !linkDocumentacao || !imageUrl) {
+  if (!nome || !descricao || !linkDocumentacao || !imagemUrl) {
     return res.status(400).json({ error: 'Todos os campos são obrigatórios, incluindo a imagem.' });
   }
 
@@ -150,7 +151,7 @@ app.post('/produtos', verificarToken, verificarAdmin, async (req, res) => {
         nome,
         descricao,
         linkDocumentacao,
-        imagemUrl: imageUrl
+        imagemUrl, // aqui também
       }
     });
     res.status(201).json(produto);
@@ -158,6 +159,7 @@ app.post('/produtos', verificarToken, verificarAdmin, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Rota pública para listar produtos
 app.get('/produtos',verificarToken, async (req, res) => {

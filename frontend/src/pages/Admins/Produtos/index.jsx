@@ -58,6 +58,8 @@ function AdminProdutos() {
   }
 
   async function handleSubmit(e) {
+    
+  console.log('Enviando formulário:', form);
     e.preventDefault();
     const token = localStorage.getItem('token');
 
@@ -98,6 +100,7 @@ function AdminProdutos() {
     <Container>
       <Title>Adicionar Novo Produto</Title>
       <Form onSubmit={handleSubmit}>
+        
         <Input
           name="nome"
           placeholder="Nome do produto"

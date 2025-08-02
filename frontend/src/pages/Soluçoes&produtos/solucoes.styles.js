@@ -35,11 +35,11 @@ export const ProductCard = styled.div`
   }
 `;
 
+
 export const ProductImage = styled.img`
   width: 100%;
-  height: 180px;
-  object-fit: contain;    // mantém toda a imagem visível, pode deixar fundo vazio
-  background-color: #f0f0f0; // fundo neutro para preencher espaços vazios
+  height: 140px;          /* altura fixa para uniformizar */
+  object-fit: cover;      /* cobre todo o espaço, cortando partes se precisar */
   border-radius: 8px;
   margin-bottom: 1rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -58,4 +58,15 @@ export const ProductDescription = styled.p`
   color: #555;
   line-height: 1.3;
   font-size: 0.85rem;
+`;
+
+export const SearchInput = styled.input`
+  display: block;
+  margin: 0 auto 2rem auto;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  max-width: 400px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 `;

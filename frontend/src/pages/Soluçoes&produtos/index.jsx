@@ -5,14 +5,15 @@ import { toast } from 'react-toastify';
 import {
   Container,
   Title,
+  SearchInput,
   ProductsGrid,
   ProductCard,
   ProductName,
-  ProductDescription,
 } from './solucoes.styles';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
@@ -37,17 +38,28 @@ export default function Products() {
     }
   }
 
+  const filteredProducts = products.filter(product =>
+    product.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Container>
       <Title>Produtos & Soluções</Title>
+
+      <SearchInput
+        type="text"
+        placeholder="Pesquisar produto..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
       <ProductsGrid>
-        {products.map(product => (
+        {filteredProducts.map(product => (
           <ProductCard key={product.id} onClick={() => navigate(`/produtos/${product.id}`)}>
             {product.imagemUrl && (
               <img 
                 src={product.imagemUrl} 
-                alt={product.nome} 
-                style={{ width: '100%', height: 'auto', borderRadius: '8px', marginBottom: '10px' }} 
+                alt={product.nome}
               />
             )}
             <ProductName>{product.nome}</ProductName>
