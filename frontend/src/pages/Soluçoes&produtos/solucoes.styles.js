@@ -37,14 +37,17 @@ export const ProductCard = styled.div`
 
 export const ProductImage = styled.img`
   width: 100%;
-  height: 100px;
-  object-fit: cover;
+  height: 180px;
+  object-fit: contain;    // mantém toda a imagem visível, pode deixar fundo vazio
+  background-color: #f0f0f0; // fundo neutro para preencher espaços vazios
   border-radius: 8px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 `;
 
+
 export const ProductName = styled.h2`
+text-align: center;
   font-size: 1rem;
   font-weight: 600;
   color: #333;

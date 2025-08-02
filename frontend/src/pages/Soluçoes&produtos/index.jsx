@@ -51,7 +51,6 @@ export default function Products() {
               />
             )}
             <ProductName>{product.nome}</ProductName>
-            <ProductDescription>{product.descricao}</ProductDescription>
           </ProductCard>
         ))}
       </ProductsGrid>
