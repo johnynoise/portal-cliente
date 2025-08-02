@@ -37,22 +37,19 @@ export default function Products() {
     }
   }
 
-  function handleClick(docUrl) {
-    // Se a docUrl for uma URL externa absoluta, usa window.open
-    if (docUrl.startsWith('http')) {
-      window.open(docUrl, '_blank');
-    } else {
-      // Caso seja uma rota interna
-      navigate(docUrl);
-    }
-  }
-
   return (
     <Container>
       <Title>Produtos & Soluções</Title>
       <ProductsGrid>
         {products.map(product => (
           <ProductCard key={product.id} onClick={() => navigate(`/produtos/${product.id}`)}>
+            {product.imagemUrl && (
+              <img 
+                src={product.imagemUrl} 
+                alt={product.nome} 
+                style={{ width: '100%', height: 'auto', borderRadius: '8px', marginBottom: '10px' }} 
+              />
+            )}
             <ProductName>{product.nome}</ProductName>
             <ProductDescription>{product.descricao}</ProductDescription>
           </ProductCard>

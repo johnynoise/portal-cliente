@@ -6,7 +6,8 @@ import {
   Description,
   LinkDoc,
   Loading,
-  Error
+  Error,
+  ProductImage
 } from './ProdutoDetalhe.styles';
 
 export default function ProdutoDetalhe() {
@@ -38,6 +39,9 @@ export default function ProdutoDetalhe() {
   return (
     <Container>
       <Title>{produto.nome}</Title>
+      {produto.imagemUrl && (
+        <ProductImage src={produto.imagemUrl} alt={`Imagem de ${produto.nome}`} />
+      )}
       <Description>{produto.descricao}</Description>
       {produto.linkDocumentacao && (
         <LinkDoc href={produto.linkDocumentacao} target="_blank" rel="noopener noreferrer">

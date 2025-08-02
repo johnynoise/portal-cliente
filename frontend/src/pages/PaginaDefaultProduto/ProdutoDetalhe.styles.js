@@ -47,3 +47,11 @@ export const Error = styled.div`
   font-size: 1.2rem;
   color: red;
 `;
+export const ProductImage = styled.img`
+  width: 100%;
+  max-height: 400px;
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  object-fit: contain;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+`;
