@@ -32,11 +32,6 @@ export default function UsuariosAdmin() {
 
   return (
     <Container>
-      <Title>Gerenciar Usuários</Title>
-
-      <AddButton onClick={() => navigate('/admin/usuarios/novo')}>
-        + Novo Usuário
-      </AddButton>
 
       <UsersTable>
         <thead>
