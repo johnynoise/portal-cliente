@@ -16,6 +16,7 @@ import AdminProdutos from './pages/Admins/Produtos';
 import AdminGerenciarProdutos from './pages/Admins/AdminProdutos';
 import AdminDashboard from './pages/Admins/AdminDashboard';
 import PaginaDefault from './pages/PaginaDefaultProduto';
+import AdminUsuarios from './pages/Admins/AdminUsuarios';
 import FAQ from './pages/FAQ/FAQ';
 import './index.css';
 
@@ -47,6 +48,7 @@ createRoot(document.getElementById('root')).render(
 
           />
           <Route path="/produtos/:id" element={<PaginaDefault />} />
+          <Route path="/admin/usuarios" element={<PrivateRoute><AdminUsuarios/></PrivateRoute>} />
           <Route
             path="/admin/produtos"
             element={
