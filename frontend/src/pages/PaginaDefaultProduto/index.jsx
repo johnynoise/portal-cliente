@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import api from '../../services/api';
 import {
   Container,
   Title,
@@ -16,22 +17,24 @@ export default function ProdutoDetalhe() {
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState(null);
 
-  useEffect(() => {
-    async function fetchProduto() {
-      try {
-        const res = await fetch(`http://localhost:3000/produtos/${id}`);
-        if (!res.ok) throw new Error('Produto não encontrado');
-        const data = await res.json();
-        setProduto(data);
-      } catch (err) {
-        setErro(err.message);
-      } finally {
-        setLoading(false);
+useEffect(() => {
+  async function fetchProduto() {
+    try {
+      const res = await api.get(`/produtos/${id}`);
+      setProduto(res.data);
+    } catch (err) {
+      if (err.response && err.response.status === 404) {
+        setErro('Produto não encontrado');
+      } else {
+        setErro('Erro ao carregar produto');
       }
+    } finally {
+      setLoading(false);
     }
+  }
 
-    fetchProduto();
-  }, [id]);
+  fetchProduto();
+}, [id]);
 
   if (loading) return <Loading>Carregando produto...</Loading>;
   if (erro) return <Error>{erro}</Error>;

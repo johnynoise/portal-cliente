@@ -33,6 +33,10 @@ function verificarToken(req, res, next) {
     next();
   });
 }
+app.get('/admin', verificarToken, verificarAdmin, (req, res) => {
+  res.json({ message: 'Acesso autorizado para administrador.' });
+});
+
 
 // Middleware para permitir só admin
 function verificarAdmin(req, res, next) {
@@ -129,7 +133,7 @@ app.post('/login', async (req, res) => {
   const token = jwt.sign(
     { id: user.id, role: user.role, email: user.email },
     SECRET,
-    { expiresIn: '1h' }
+    { expiresIn: '1h' } // expira em 1 hora
   );
 
   res.json({ token });

@@ -16,15 +16,23 @@ api.interceptors.request.use(config => {
 
 // Intercepta respostas para tratar erros de autenticação
 api.interceptors.response.use(
-  response => response, // retorna a resposta normalmente se não houve erro
+  response => response,
   error => {
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-        console.error('Erro de autenticação:', error.response.data);
-      // Token inválido ou expirado
-      localStorage.removeItem('token');
-      window.location.href = '/'; // redireciona para login (ajuste a rota se necessário)
+      const errorMsg = (error.response.data.error || '').toLowerCase();
+
+      if (
+        errorMsg.includes('token expirado') ||
+        errorMsg.includes('jwt expired') ||
+        errorMsg.includes('token inválido') ||
+        errorMsg.includes('invalid token')
+      ) {
+        console.error('Token inválido ou expirado detectado:', errorMsg);
+        localStorage.removeItem('token');
+        window.location.href = '/'; // Redireciona para a página de login
+      }
     }
-    return Promise.reject(error); // propaga o erro para quem chamou a API
+    return Promise.reject(error);
   }
 );
 

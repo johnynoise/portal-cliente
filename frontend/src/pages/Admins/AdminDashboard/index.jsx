@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Container, Title, Grid, Card } from './AdminDashboard.styles';
+import api from '../../../services/api';
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -22,6 +24,21 @@ function AdminDashboard() {
       rota: '/admin/relatorios'
     }
   ];
+
+useEffect(() => {
+  const fetchAdminData = async () => {
+    try {
+      await api.get('/admin');
+    } catch (error) {
+      if (!error.response || (error.response.status !== 401 && error.response.status !== 403)) {
+        toast.error(error.message || 'Erro ao validar acesso do administrador.');
+      }
+    }
+  };
+
+  fetchAdminData();
+}, []);
+
 
   return (
     <Container>

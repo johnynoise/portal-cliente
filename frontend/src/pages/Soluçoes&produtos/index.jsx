@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import api from '../../services/api';
 
 import {
   Container,
@@ -21,23 +22,18 @@ export default function Products() {
   useEffect(() => {
     fetchProducts();
   }, []);
-
   async function fetchProducts() {
     try {
-      const res = await fetch('http://localhost:3000/produtos', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!res.ok) throw new Error('Erro ao carregar produtos');
-
-      const data = await res.json();
+      const { data } = await api.get('/produtos'); // o interceptor do api já manda o token no header
       setProducts(data);
     } catch (error) {
-      toast.error(error.message);
+      // Se a resposta for 401, o interceptor já tratou, aqui só exibe mensagem para outros erros
+      if (error.response && error.response.status !== 401) {
+        toast.error(error.message || 'Erro ao carregar produtos');
+      }
     }
   }
+
 
   const filteredProducts = products.filter(product =>
     product.nome.toLowerCase().includes(searchTerm.toLowerCase())
