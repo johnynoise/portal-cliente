@@ -49,9 +49,9 @@ export default function UsuariosAdmin() {
         <tbody>
           {usuarios.map(usuario => (
             <TableRow key={usuario.id}>
-              <TableCell>{usuario.nome}</TableCell>
+              <TableCell>{usuario.name}</TableCell>
               <TableCell>{usuario.email}</TableCell>
-              <TableCell>{usuario.tipo}</TableCell>
+              <TableCell>{usuario.role}</TableCell>
             </TableRow>
           ))}
         </tbody>

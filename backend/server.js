@@ -37,6 +37,22 @@ app.get('/admin', verificarToken, verificarAdmin, (req, res) => {
   res.json({ message: 'Acesso autorizado para administrador.' });
 });
 
+// Rota para listar usuários (apenas admin)
+app.get('/admin/usuarios', verificarToken, verificarAdmin, async (req, res) => {
+  try {
+    const usuarios = await prisma.usuario.findMany({
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        role: true,
+      },
+    });
+    res.json(usuarios);
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao buscar usuários' });
+  }
+});
 
 // Middleware para permitir só admin
 function verificarAdmin(req, res, next) {
@@ -171,14 +187,7 @@ app.get('/produtos',verificarToken, async (req, res) => {
   res.json(produtos);
 });
 
-// Rota para listar usuários (apenas admin)
-app.get('/admin/usuarios', verificarToken, verificarAdmin, async (req, res) => {
-  try {
-    const usuarios = await prisma.user.findMany();
-    res.json(usuarios);
-  } catch (err) {
-    res.status(500).json({ error: 'Erro ao buscar usuários.' });
-  }});
+
 
 
 // Rota para buscar produto por ID
