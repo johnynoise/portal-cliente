@@ -46,6 +46,8 @@ app.get('/admin/usuarios', verificarToken, verificarAdmin, async (req, res) => {
         nome: true,
         email: true,
         role: true,
+        empresa: true,
+        telefone: true,
       },
     });
     res.json(usuarios);

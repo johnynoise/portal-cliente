@@ -39,6 +39,8 @@ export default function UsuariosAdmin() {
             <TableHeader>Nome</TableHeader>
             <TableHeader>Email</TableHeader>
             <TableHeader>Tipo</TableHeader>
+            <TableHeader>Empresa</TableHeader>
+            <TableHeader>Telefone</TableHeader>
           </TableRow>
         </thead>
         <tbody>
@@ -47,6 +49,8 @@ export default function UsuariosAdmin() {
               <TableCell>{usuario.name}</TableCell>
               <TableCell>{usuario.email}</TableCell>
               <TableCell>{usuario.role}</TableCell>
+              <TableCell>{usuario.empresa}</TableCell>
+              <TableCell>{usuario.telefone}</TableCell>
             </TableRow>
           ))}
         </tbody>
