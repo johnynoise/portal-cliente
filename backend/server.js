@@ -170,6 +170,17 @@ app.get('/produtos',verificarToken, async (req, res) => {
   const produtos = await prisma.produto.findMany();
   res.json(produtos);
 });
+
+// Rota para listar usuários (apenas admin)
+app.get('/admin/usuarios', verificarToken, verificarAdmin, async (req, res) => {
+  try {
+    const usuarios = await prisma.user.findMany();
+    res.json(usuarios);
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao buscar usuários.' });
+  }});
+
+
 // Rota para buscar produto por ID
 app.get('/produtos/:id', async (req, res) => {
   const { id } = req.params;
