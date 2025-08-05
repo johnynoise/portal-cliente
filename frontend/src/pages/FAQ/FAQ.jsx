@@ -2,48 +2,88 @@ import React, { useState } from 'react';
 import {
   Container,
   Title,
+  SearchInput,
+  CategorySelect,
+  FaqList,
   FaqItem,
   Question,
+  AnswerWrapper,
   Answer
 } from './faq.styles';
 
-const faqData = [
+const faqs = [
   {
-    question: 'Como posso acessar meus relatórios?',
-    answer: 'Você pode acessar seus relatórios ao fazer login e ir até a aba "Meus Relatórios" no menu principal.'
+    category: 'Conta',
+    question: 'Como acesso minha conta?',
+    answer: 'Você pode acessar sua conta clicando em "Login" no topo da página.'
   },
   {
-    question: 'O que fazer se eu esquecer minha senha?',
-    answer: 'Use a opção "Esqueci minha senha" na página de login. Um link de recuperação será enviado ao seu e-mail.'
+    category: 'Conta',
+    question: 'Como redefinir minha senha?',
+    answer: 'Clique em "Esqueci minha senha" na página de login.'
   },
   {
-    question: 'Como posso entrar em contato com o suporte?',
-    answer: 'Envie um e-mail para suporte@seudominio.com ou utilize o formulário de contato dentro do portal.'
+    category: 'Documentação',
+    question: 'Onde posso encontrar a documentação?',
+    answer: 'A documentação está disponível na seção "Ajuda" do portal.'
   },
   {
-    question: 'Posso alterar meus dados cadastrais?',
-    answer: 'Sim, vá até a aba "Meu Perfil" e edite as informações desejadas.'
+    category: 'Suporte',
+    question: 'Como falar com o suporte?',
+    answer: 'Você pode nos contactar pelo formulário de contato ou chat online.'
   }
 ];
 
-export default function Faq() {
-  const [activeIndex, setActiveIndex] = useState(null);
+export default function FaqPage() {
+  const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('Todas');
+  const [openIndex, setOpenIndex] = useState(null);
 
-  const toggle = (index) => {
-    setActiveIndex(activeIndex === index ? null : index);
+  const categorias = ['Todas', ...new Set(faqs.map(faq => faq.category))];
+
+  const filteredFaqs = faqs.filter(faq => {
+    const matchesSearch = faq.question.toLowerCase().includes(search.toLowerCase()) ||
+                          faq.answer.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = selectedCategory === 'Todas' || faq.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const toggleAnswer = (index) => {
+    setOpenIndex(prev => (prev === index ? null : index));
   };
 
   return (
     <Container>
-      <Title>Perguntas Frequentes</Title>
-      {faqData.map((item, index) => (
-        <FaqItem key={index}>
-          <Question onClick={() => toggle(index)}>
-            {item.question}
-          </Question>
-          {activeIndex === index && <Answer>{item.answer}</Answer>}
-        </FaqItem>
-      ))}
+      <Title>FAQ - Perguntas Frequentes</Title>
+
+      <SearchInput
+        type="text"
+        placeholder="Pesquisar uma pergunta..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      <CategorySelect value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+        {categorias.map((cat, i) => (
+          <option key={i} value={cat}>{cat}</option>
+        ))}
+      </CategorySelect>
+
+      <FaqList>
+        {filteredFaqs.map((faq, index) => (
+          <FaqItem key={index} onClick={() => toggleAnswer(index)}>
+            <Question isOpen={openIndex === index}>
+              {faq.question}
+              <span>{openIndex === index ? '−' : '+'}</span>
+            </Question>
+            <AnswerWrapper isOpen={openIndex === index}>
+              <Answer>{faq.answer}</Answer>
+            </AnswerWrapper>
+          </FaqItem>
+        ))}
+
+        {filteredFaqs.length === 0 && <p>Nenhuma pergunta encontrada.</p>}
+      </FaqList>
     </Container>
   );
 }
