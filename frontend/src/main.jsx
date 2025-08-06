@@ -17,6 +17,7 @@ import AdminGerenciarProdutos from './pages/Admins/AdminProdutos';
 import AdminDashboard from './pages/Admins/AdminDashboard';
 import PaginaDefault from './pages/PaginaDefaultProduto';
 import AdminUsuarios from './pages/Admins/AdminUsuarios';
+import RecuperarSenha from './pages/RecuperarSenha';
 import FAQ from './pages/FAQ/FAQ';
 import './index.css';
 
@@ -27,7 +28,7 @@ createRoot(document.getElementById('root')).render(
         {/* Rotas públicas */}
         <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/cadastro" element={<PublicRoute><Cadastro /></PublicRoute>} />
-
+        <Route path="/recuperar-senha" element={<PublicRoute><RecuperarSenha /></PublicRoute>} />
         {/* Rotas protegidas com layout persistente */}
         <Route
           element={
