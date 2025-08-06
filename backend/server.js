@@ -40,10 +40,10 @@ app.get('/admin', verificarToken, verificarAdmin, (req, res) => {
 // Rota para listar usuários (apenas admin)
 app.get('/admin/usuarios', verificarToken, verificarAdmin, async (req, res) => {
   try {
-    const usuarios = await prisma.usuario.findMany({
+    const usuarios = await prisma.user.findMany({
       select: {
         id: true,
-        nome: true,
+        name: true,
         email: true,
         role: true,
         empresa: true,
@@ -52,9 +52,12 @@ app.get('/admin/usuarios', verificarToken, verificarAdmin, async (req, res) => {
     });
     res.json(usuarios);
   } catch (err) {
+    console.error('Erro ao buscar usuários:', err);
     res.status(500).json({ message: 'Erro ao buscar usuários' });
   }
 });
+
+
 
 // Middleware para permitir só admin
 function verificarAdmin(req, res, next) {
