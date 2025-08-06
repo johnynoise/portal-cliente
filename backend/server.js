@@ -37,6 +37,29 @@ app.get('/admin', verificarToken, verificarAdmin, (req, res) => {
   res.json({ message: 'Acesso autorizado para administrador.' });
 });
 
+
+// POST /auth/recuperar-senha
+app.post('/auth/recuperar-senha', async (req, res) => {
+  const { email } = req.body;
+  const usuario = await prisma.usuario.findUnique({ where: { email } });
+
+  if (!usuario) {
+    return res.status(404).json({ message: 'Usuário não encontrado' });
+  }
+
+  // Aqui você geraria um token de recuperação e enviaria por e-mail
+  // (exemplo fictício)
+  const token = jwt.sign({ userId: usuario.id }, process.env.JWT_SECRET, { expiresIn: '30m' });
+
+  // Enviar e-mail com link contendo o token
+  console.log(`Enviar e-mail com link: http://localhost:3001/redefinir-senha/${token}`);
+
+  res.json({ message: 'E-mail de recuperação enviado' });
+});
+
+
+
+
 // Rota para listar usuários (apenas admin)
 app.get('/admin/usuarios', verificarToken, verificarAdmin, async (req, res) => {
   try {
