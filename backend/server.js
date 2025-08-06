@@ -40,6 +40,12 @@ app.get('/admin', verificarToken, verificarAdmin, (req, res) => {
 });
 
 
+
+
+
+
+
+
 // POST /auth/recuperar-senha
 import { enviarEmailRecuperacao } from './services/emailService.js';
 
@@ -62,7 +68,26 @@ app.post('/auth/recuperar-senha', async (req, res) => {
   }
 });
 
+// Rota para redefinir senha
+app.post('/auth/redefinir-senha', async (req, res) => {
+  const { token, novaSenha } = req.body;
 
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const hashedPassword = bcrypt.hashSync(novaSenha, 8);
+
+    await prisma.user.update({
+      where: { id: decoded.userId },
+      data: { password: hashedPassword }
+    });
+
+    res.json({ message: 'Senha redefinida com sucesso.' });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: 'Token inválido ou expirado.' });
+  }
+});
 
 
 
