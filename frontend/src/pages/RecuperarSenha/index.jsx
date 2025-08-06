@@ -3,6 +3,7 @@ import { Container, Form, Input, Button, Message, Title } from './RecuperarSenha
 import { toast } from 'react-toastify';
 import api from '../../services/api';
 
+
 export default function RecuperarSenha() {
   const [email, setEmail] = useState('');
   const [enviado, setEnviado] = useState(false);

@@ -105,7 +105,7 @@ export default function Login() {
           )}
 
           {/* Link para recuperação de senha */}
-          <Link href="#">Esqueceu a senha?</Link>
+          <Link href="/recuperar-senha">Esqueceu a senha?</Link>
 
           {/* Botão de envio do formulário */}
           <Button type="submit" disabled={isSubmitting}>
