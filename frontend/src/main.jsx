@@ -19,6 +19,7 @@ import PaginaDefault from './pages/PaginaDefaultProduto';
 import AdminUsuarios from './pages/Admins/AdminUsuarios';
 import RecuperarSenha from './pages/RecuperarSenha';
 import FAQ from './pages/FAQ/FAQ';
+import RedefinirSenha from './RedefinirSenha';
 import './index.css';
 
 createRoot(document.getElementById('root')).render(
@@ -29,6 +30,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/cadastro" element={<PublicRoute><Cadastro /></PublicRoute>} />
         <Route path="/recuperar-senha" element={<PublicRoute><RecuperarSenha /></PublicRoute>} />
+        <Route path="/redefinir-senha/:token" element={<RedefinirSenha />} />
         {/* Rotas protegidas com layout persistente */}
         <Route
           element={
