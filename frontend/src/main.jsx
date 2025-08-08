@@ -19,7 +19,7 @@ import PaginaDefault from './pages/PaginaDefaultProduto';
 import AdminUsuarios from './pages/Admins/AdminUsuarios';
 import RecuperarSenha from './pages/RecuperarSenha';
 import FAQ from './pages/FAQ/FAQ';
-import RedefinirSenha from './RedefinirSenha';
+import RedefinirSenha from './pages/RedefinirSenha';
 import './index.css';
 
 createRoot(document.getElementById('root')).render(

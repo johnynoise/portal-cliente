@@ -39,6 +39,12 @@ export const Input = styled.input`
   border-radius: 30px;
   border: 1px solid #ccc;
   font-size: 14px;
+
+  &:focus {
+    outline: none;
+    border-color: #004899;
+    box-shadow: 0 0 5px #004899;
+  }
 `;
 
 export const Button = styled.button`
@@ -52,19 +58,35 @@ export const Button = styled.button`
   cursor: pointer;
   transition: background-color 0.3s ease;
 
-  &:hover {
-    background-color: #f5a623;
+  &:hover:not(:disabled) {
+    background-color: #F5A623;
   }
 
   &:disabled {
-    background-color: #999;
+    background-color: #a0a0a0;
     cursor: not-allowed;
   }
 `;
 
-export const ErrorMessage = styled.p`
-  color: #d9534f;
-  font-size: 13px;
-  margin-top: -10px;
-  margin-left: 10px;
+export const Link = styled.a`
+  text-align: center;
+  font-size: 14px;
+  color: #004899;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: #F5A623;
+  }
+`;
+
+export const SecondaryButton = styled(Button)`
+  background-color: #fff;
+  color: #004899;
+  border: 2px solid #004899;
+
+  &:hover:not(:disabled) {
+    background-color: #e6f0fc;
+    color: #004899;
+  }
 `;

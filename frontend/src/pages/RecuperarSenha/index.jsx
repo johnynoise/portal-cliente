@@ -1,47 +1,92 @@
-import React, { useState } from 'react';
-import { Container, Form, Input, Button, Message, Title } from './RecuperarSenha.styles';
-import { toast } from 'react-toastify';
-import api from '../../services/api';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast, ToastContainer } from 'react-toastify';
+import Loading from '../../components/TelaLoading/Loading'
 
+import {
+  Container,
+  Logo,
+  Form,
+  Input,
+  Button,
+  Title,
+} from './RecuperarSenha.styles'; // Reaproveitando estilos do login
+
+import LogoImage from '../../assets/wasion.svg'
+
+import * as z from 'zod';
+
+// Schema Zod para validar email
+const recuperarSenhaSchema = z.object({
+  email: z.string().email('Digite um e-mail válido'),
+});
 
 export default function RecuperarSenha() {
-  const [email, setEmail] = useState('');
-  const [enviado, setEnviado] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isSubmitSuccessful },
+  } = useForm({
+    resolver: zodResolver(recuperarSenhaSchema),
+  });
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-
-    if (!email || !email.includes('@')) {
-      toast.error('Digite um e-mail válido.');
-      return;
-    }
-
+  async function onSubmit(data) {
     try {
-      await api.post('/auth/recuperar-senha', { email });
-      setEnviado(true);
+      const res = await fetch('http://localhost:3000/auth/recuperar-senha', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: data.email }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Erro ao enviar e-mail de recuperação.');
+      }
+
+      toast.success('Verifique sua caixa de entrada para redefinir sua senha.');
     } catch (error) {
-      toast.error('Erro ao enviar e-mail de recuperação.');
+      toast.error(error.message);
     }
   }
 
-  return (
+return (
+  <>
+    {isSubmitting && <Loading />}
+
     <Container>
-      <Form onSubmit={handleSubmit}>
+              <Logo src={LogoImage} alt="Logo" />
+      <Form onSubmit={handleSubmit(onSubmit)} noValidate>
+
         <Title>Recuperar Senha</Title>
-        {enviado ? (
-          <Message>Verifique sua caixa de entrada para redefinir sua senha.</Message>
+
+        {isSubmitSuccessful ? (
+          <p style={{ textAlign: 'center', color: '#004899' }}>
+            Verifique sua caixa de entrada para redefinir sua senha.
+          </p>
         ) : (
           <>
             <Input
               type="email"
               placeholder="Digite seu e-mail"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              {...register('email')}
+              aria-invalid={errors.email ? 'true' : 'false'}
             />
-            <Button type="submit">Enviar</Button>
+            {errors.email && (
+              <p style={{ color: 'red', marginTop: '-0.5rem', marginBottom: '1rem' }}>
+                {errors.email.message}
+              </p>
+            )}
+
+            <Button type="submit" disabled={isSubmitting}>
+              Enviar
+            </Button>
           </>
         )}
       </Form>
     </Container>
-  );
+
+    <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
+  </>
+);
 }
