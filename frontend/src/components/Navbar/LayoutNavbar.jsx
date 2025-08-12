@@ -1,6 +1,6 @@
 // src/components/Layout.jsx
 import React from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
 import LogoImage from '../../assets/wasion.svg';
 
@@ -11,12 +11,14 @@ import {
   Logo,
   NavItems,
   NavItem,
-  LogoutButton,
-  AdminButton
+  ButtonsContainer,
+  AdminButton,
+  LogoutButton
 } from './layout.styles';
 
 export default function Layout() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const token = localStorage.getItem('token');
   let isAdmin = false;
@@ -35,6 +37,11 @@ export default function Layout() {
     navigate('/');
   }
 
+  // Função para verificar se a rota está ativa
+  const isActiveRoute = (path) => {
+    return location.pathname === path;
+  };
+
   return (
     <Container>
       <Navbar>
@@ -43,18 +50,49 @@ export default function Layout() {
         </LogoWrapper>
 
         <NavItems>
-          <NavItem onClick={() => navigate('/home')}>Home</NavItem>
-          <NavItem onClick={() => navigate('/solucoes-produtos')}>Produtos & Soluções</NavItem>
-          <NavItem onClick={() => navigate('/arquivos')}>Arquivos</NavItem>
-          <NavItem onClick={() => navigate('/suporte')}>Suporte</NavItem>
-          <NavItem onClick={() => navigate('/faq')}>FAQ</NavItem>
+          <NavItem 
+            onClick={() => navigate('/home')}
+            className={isActiveRoute('/home') ? 'active' : ''}
+          >
+            🏠 Home
+          </NavItem>
+          <NavItem 
+            onClick={() => navigate('/solucoes-produtos')}
+            className={isActiveRoute('/solucoes-produtos') ? 'active' : ''}
+          >
+            📦 Produtos & Soluções
+          </NavItem>
+          <NavItem 
+            onClick={() => navigate('/arquivos')}
+            className={isActiveRoute('/arquivos') ? 'active' : ''}
+          >
+            📁 Arquivos
+          </NavItem>
+          <NavItem 
+            onClick={() => navigate('/suporte')}
+            className={isActiveRoute('/suporte') ? 'active' : ''}
+          >
+            💬 Suporte
+          </NavItem>
+          <NavItem 
+            onClick={() => navigate('/faq')}
+            className={isActiveRoute('/faq') ? 'active' : ''}
+          >
+            ❓ FAQ
+          </NavItem>
         </NavItems>
 
-        {isAdmin && (
-          <AdminButton onClick={() => navigate('/admin')}>Admin</AdminButton>
-        )}
+        <ButtonsContainer>
+          {isAdmin && (
+            <AdminButton onClick={() => navigate('/admin')}>
+              ⚙️ Admin
+            </AdminButton>
+          )}
 
-        <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
+          <LogoutButton onClick={handleLogout}>
+            🚪 Sair
+          </LogoutButton>
+        </ButtonsContainer>
       </Navbar>
 
       <Outlet />
