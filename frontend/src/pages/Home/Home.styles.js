@@ -18,7 +18,7 @@ const pulse = keyframes`
 export const Container = styled.div`
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #a3c1f7 0%, #fbe7a1 100%);
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
@@ -54,7 +54,7 @@ export const Title = styled.h1`
   font-weight: 700;
   color: #2c3e50;
   margin: 0;
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, #3c56e7, #5a67d8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `;
@@ -200,7 +200,7 @@ export const UserAvatar = styled.div`
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, #3c56e7, #5a67d8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -284,7 +284,7 @@ export const ActionButton = styled.button`
   padding: 0.8rem 1.2rem;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, #3c56e7, #5a67d8);
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -333,7 +333,7 @@ export const StatIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, #3c56e7, #5a67d8);
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 `;
