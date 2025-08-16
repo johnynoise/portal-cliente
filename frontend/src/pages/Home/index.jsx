@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Content, LoadingSpinner } from './Home.styles';
+import { Container, Content} from './Home.styles';
+import LoadingSpinner from '../../components/TelaLoading/Loading';
 
 import WelcomeCard from './components/WelcomeCard/WelcomeCard';
 import ProductsSection from './components/ProductsSection/ProductsSection';
@@ -8,29 +9,69 @@ import NotificationsSection from './components/NotificationsSection/Notification
 
 function Home() {
   const navigate = useNavigate();
-  const [user, setUser] = useState({ name: 'Johny', email: 'johny@email.com' });
+  const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
 
-  // Dados mockados - substituir por chamadas reais da API
-  const mockNotifications = [
-    { id: 1, title: 'Novo produto disponível', text: 'Confira nossa nova linha de medidores inteligentes', time: '2h atrás', type: 'info' },
-    { id: 2, title: 'Manutenção programada', text: 'Sistema estará em manutenção no domingo das 2h às 6h', time: '5h atrás', type: 'warning' },
-    { id: 3, title: 'Relatório mensal disponível', text: 'Seu relatório de consumo de janeiro está pronto', time: '1 dia atrás', type: 'success' }
+  // Mock de produtos com documentos
+  const mockProducts = [
+    {
+      id: 1,
+      title: 'Medidor Inteligente M1',
+      description: 'Manual técnico e certificações do Medidor Inteligente M1',
+      image: '/api/placeholder/120/80',
+      status: 'Documentos disponíveis',
+      link: '/produtos/m1/documentos'
+    },
+    {
+      id: 2,
+      title: 'Sensor de Qualidade',
+      description: 'Relatórios e manuais do Sensor de Qualidade',
+      image: '/api/placeholder/120/80',
+      status: 'Documentos disponíveis',
+      link: '/produtos/sensor-qualidade/documentos'
+    },
+    {
+      id: 3,
+      title: 'Sistema de Backup',
+      description: 'Documentação técnica e procedimentos do Sistema de Backup',
+      image: '/api/placeholder/120/80',
+      status: 'Atualização pendente',
+      link: '/produtos/backup/documentos'
+    }
   ];
 
-  const mockProducts = [
-    { id: 1, title: 'Medidor Inteligente M1', description: 'Medidor de energia com conectividade IoT e análise em tempo real', image: '/api/placeholder/120/80', status: 'Ativo', consumo: '1.2 kWh/dia' },
-    { id: 2, title: 'Sensor de Qualidade', description: 'Monitor de qualidade de energia com alertas automáticos', image: '/api/placeholder/120/80', status: 'Ativo', consumo: '0.8 kWh/dia' },
-    { id: 3, title: 'Sistema de Backup', description: 'Sistema de backup inteligente para proteção de dados', image: '/api/placeholder/120/80', status: 'Manutenção', consumo: '0.5 kWh/dia' }
+  // Mock de notificações corporativas
+  const mockNotifications = [
+    {
+      id: 1,
+      title: 'Novo manual disponível',
+      text: 'Manual técnico do Medidor Inteligente M1 foi atualizado.',
+      time: 'Hoje, 09:00',
+      type: 'info'
+    },
+    {
+      id: 2,
+      title: 'Atualização de certificação',
+      text: 'Certificação ISO do Sistema de Backup atualizada.',
+      time: 'Ontem, 16:30',
+      type: 'success'
+    },
+    {
+      id: 3,
+      title: 'Manutenção programada',
+      text: 'Serviço de documentos estará indisponível domingo das 02h às 06h.',
+      time: '2 dias atrás',
+      type: 'warning'
+    }
   ];
 
   useEffect(() => {
+    // Simula carregamento de dados
     setTimeout(() => {
-      setNotifications(mockNotifications);
       setProducts(mockProducts);
+      setNotifications(mockNotifications);
       setLoading(false);
     }, 1000);
   }, []);
@@ -45,22 +86,12 @@ function Home() {
     navigate('/');
   }
 
-  function handleQuickAction(action) {
-    switch(action) {
-      case 'relatorios': navigate('/relatorios'); break;
-      case 'produtos': navigate('/produtos'); break;
-      case 'suporte': navigate('/suporte'); break;
-      case 'configuracoes': navigate('/configuracoes'); break;
-      default: console.log('Ação:', action);
-    }
-  }
-
   if (loading) {
     return (
       <Container>
         <LoadingSpinner>
           <div className="spinner"></div>
-          <p>Carregando seu painel...</p>
+          <p>Carregando portal corporativo...</p>
         </LoadingSpinner>
       </Container>
     );
@@ -69,9 +100,22 @@ function Home() {
   return (
     <Container>
       <Content>
-        <WelcomeCard user={user} onAction={handleQuickAction} />
-        <ProductsSection products={filteredProducts} />
+        {/* Mensagem de boas-vindas corporativa */}
+        <WelcomeCard
+          user={{ name: 'Portal Corporativo' }}
+          message="Bem-vindo! Aqui você encontra documentos, manuais e certificações dos nossos produtos."
+        />
+
+        {/* Lista de produtos com documentos */}
+        <ProductsSection
+          products={filteredProducts}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+        />
+
+        {/* Seção de notificações importantes */}
         <NotificationsSection notifications={notifications} />
+
       </Content>
     </Container>
   );

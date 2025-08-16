@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
-
+import Loading from '../../components/TelaLoading/Loading';
 import {
   Container,
   Header,
@@ -33,8 +33,6 @@ import {
   FeatureTag,
   ProductActions,
   ActionButton,
-  LoadingContainer,
-  LoadingSpinner,
   EmptyState,
   EmptyIcon,
   EmptyTitle,
@@ -182,10 +180,10 @@ export default function Products() {
   if (loading) {
     return (
       <Container>
-        <LoadingContainer>
-          <LoadingSpinner />
+        <Loading>
+          <Loading />
           <p>Carregando produtos...</p>
-        </LoadingContainer>
+        </Loading>
       </Container>
     );
   }

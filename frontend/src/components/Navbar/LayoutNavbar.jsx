@@ -37,10 +37,7 @@ export default function Layout() {
     navigate('/');
   }
 
-  // Função para verificar se a rota está ativa
-  const isActiveRoute = (path) => {
-    return location.pathname === path;
-  };
+  const isActiveRoute = (path) => location.pathname === path;
 
   return (
     <Container>
@@ -50,47 +47,47 @@ export default function Layout() {
         </LogoWrapper>
 
         <NavItems>
-          <NavItem 
+          <NavItem
             onClick={() => navigate('/home')}
             className={isActiveRoute('/home') ? 'active' : ''}
           >
-            🏠 Home
+            Home
           </NavItem>
-          <NavItem 
+          <NavItem
             onClick={() => navigate('/solucoes-produtos')}
             className={isActiveRoute('/solucoes-produtos') ? 'active' : ''}
           >
-            📦 Produtos & Soluções
+            Produtos & Soluções
           </NavItem>
-          <NavItem 
+          <NavItem
             onClick={() => navigate('/arquivos')}
             className={isActiveRoute('/arquivos') ? 'active' : ''}
           >
-            📁 Arquivos
+            Arquivos
           </NavItem>
-          <NavItem 
+          <NavItem
             onClick={() => navigate('/suporte')}
             className={isActiveRoute('/suporte') ? 'active' : ''}
           >
-            💬 Suporte
+            Suporte
           </NavItem>
-          <NavItem 
+          <NavItem
             onClick={() => navigate('/faq')}
             className={isActiveRoute('/faq') ? 'active' : ''}
           >
-            ❓ FAQ
+            FAQ
           </NavItem>
         </NavItems>
 
         <ButtonsContainer>
           {isAdmin && (
             <AdminButton onClick={() => navigate('/admin')}>
-              ⚙️ Admin
+              Admin
             </AdminButton>
           )}
 
           <LogoutButton onClick={handleLogout}>
-            🚪 Sair
+            Sair
           </LogoutButton>
         </ButtonsContainer>
       </Navbar>

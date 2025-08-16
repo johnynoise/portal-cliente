@@ -8,7 +8,7 @@ export default function WelcomeCard({ user, onAction }) {
         {user.name.charAt(0).toUpperCase()}
       </UserAvatar>
       <UserInfo>
-        <UserName>Bem-vindo, {user.name}!</UserName>
+        <UserName>Bem-vindo ao {user.name}!</UserName>
         <UserStatus>
           <Badge type="success">Conta Ativa</Badge>
           <span>Último acesso: Hoje às 14:30</span>
