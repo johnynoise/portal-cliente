@@ -1,25 +1,69 @@
+// frontend/src/pages/Home/components/WelcomeCard/WelcomeCard.jsx
 import React from 'react';
-import { WelcomeCard as Card, UserAvatar, UserInfo, UserName, UserStatus, Badge, QuickActions, ActionButton } from './WelcomeCard.styles';
+import { 
+  WelcomeCard,
+  UserAvatar,
+  UserInfo,
+  UserName,
+  UserStatus,
+  Badge,
+  WelcomeActions,
+  WelcomeActionButton
+} from '../../Home.styles';
 
-export default function WelcomeCard({ user, onAction }) {
+const WelcomeCardComponent = ({ user, message, actions = [] }) => {
+  const getInitials = (name) => {
+    if (!name) return '?';
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const getCurrentTime = () => {
+    const now = new Date();
+    const hour = now.getHours();
+    
+    if (hour < 12) return 'Bom dia';
+    if (hour < 18) return 'Boa tarde';
+    return 'Boa noite';
+  };
+
   return (
-    <Card>
-      <UserAvatar aria-label={`Avatar de ${user.name}`}>
-        {user.name.charAt(0).toUpperCase()}
+    <WelcomeCard>
+      <UserAvatar>
+        {getInitials(user?.name)}
       </UserAvatar>
+      
       <UserInfo>
-        <UserName>Bem-vindo ao {user.name}!</UserName>
+        <UserName>
+          {getCurrentTime()}, {user?.name || 'Cliente'}!
+        </UserName>
+        
         <UserStatus>
-          <Badge type="success">Conta Ativa</Badge>
-          <span>Último acesso: Hoje às 14:30</span>
+          <span>{message}</span>
+          {user?.role && <Badge type="info">{user.role}</Badge>}
+          <Badge type="success">Portal Ativo</Badge>
         </UserStatus>
+
+        {actions && actions.length > 0 && (
+          <WelcomeActions>
+            {actions.map((action, index) => (
+              <WelcomeActionButton
+                key={index}
+                primary={index === 0}
+                onClick={action.action}
+              >
+                {action.label}
+              </WelcomeActionButton>
+            ))}
+          </WelcomeActions>
+        )}
       </UserInfo>
-      <QuickActions>
-        <ActionButton onClick={() => onAction('relatorios')}>📊 Relatórios</ActionButton>
-        <ActionButton onClick={() => onAction('produtos')}>📦 Produtos</ActionButton>
-        <ActionButton onClick={() => onAction('suporte')}>💬 Suporte</ActionButton>
-        <ActionButton onClick={() => onAction('configuracoes')}>⚙️ Config</ActionButton>
-      </QuickActions>
-    </Card>
+    </WelcomeCard>
   );
-}
+};
+
+export default WelcomeCardComponent;
