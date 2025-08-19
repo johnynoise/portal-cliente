@@ -20,6 +20,7 @@ import AdminUsuarios from './pages/Admins/AdminUsuarios';
 import RecuperarSenha from './pages/RecuperarSenha';
 import FAQ from './pages/FAQ/FAQ';
 import RedefinirSenha from './pages/RedefinirSenha';
+import Suporte from './pages/Suporte';
 import './index.css';
 
 createRoot(document.getElementById('root')).render(
@@ -61,6 +62,7 @@ createRoot(document.getElementById('root')).render(
             }
           />
           <Route path="/faq" element={<PrivateRoute><FAQ /></PrivateRoute>} />
+          <Route path="/suporte" element={<PrivateRoute><Suporte /></PrivateRoute>} />
         </Route>
 
         {/* Página 404 */}

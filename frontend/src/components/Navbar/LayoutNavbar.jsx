@@ -60,12 +60,6 @@ export default function Layout() {
             Produtos & Soluções
           </NavItem>
           <NavItem
-            onClick={() => navigate('/arquivos')}
-            className={isActiveRoute('/arquivos') ? 'active' : ''}
-          >
-            Arquivos
-          </NavItem>
-          <NavItem
             onClick={() => navigate('/suporte')}
             className={isActiveRoute('/suporte') ? 'active' : ''}
           >
