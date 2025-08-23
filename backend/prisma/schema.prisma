@@ -33,3 +33,18 @@ model Produto {
   imagemUrl       String?
 }
 
+model Faq {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  pergunta      String
+  resposta      String
+  categoria     String
+  ordem         Int      @default(0)
+  ativo         Boolean  @default(true)
+  visualizacoes Int      @default(0)
+  util          Int      @default(0)
+  naoUtil       Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("faqs")
+}
