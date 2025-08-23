@@ -287,6 +287,204 @@ app.put('/produtos/:id', verificarToken, verificarAdmin, async (req, res) => {
 });
 
 
+app.get('/faq', async (req, res) => {
+  try {
+    const faqs = await prisma.faq.findMany({
+      where: { ativo: true },
+      orderBy: [
+        { ordem: 'asc' },
+        { createdAt: 'desc' }
+      ],
+      select: {
+        id: true,
+        pergunta: true,
+        resposta: true,
+        categoria: true,
+        ordem: true,
+        visualizacoes: true,
+        util: true,
+        naoUtil: true,
+        createdAt: true
+      }
+    });
+    res.json(faqs);
+  } catch (err) {
+    console.error('Erro ao buscar FAQs:', err);
+    res.status(500).json({ error: 'Erro ao buscar FAQs' });
+  }
+});
+
+// POST /faq/:id/visualizar - Incrementar visualizações
+app.post('/faq/:id/visualizar', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await prisma.faq.update({
+      where: { id },
+      data: { visualizacoes: { increment: 1 } }
+    });
+    res.status(200).json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao registrar visualização' });
+  }
+});
+
+// POST /faq/:id/avaliar - Avaliar utilidade da FAQ
+app.post('/faq/:id/avaliar', async (req, res) => {
+  const { id } = req.params;
+  const { util } = req.body; // boolean: true = útil, false = não útil
+
+  try {
+    const updateData = util ? 
+      { util: { increment: 1 } } : 
+      { naoUtil: { increment: 1 } };
+
+    await prisma.faq.update({
+      where: { id },
+      data: updateData
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao avaliar FAQ' });
+  }
+});
+
+// ===== ROTAS ADMIN FAQ =====
+
+// GET /admin/faq - Buscar todas as FAQs (admin)
+app.get('/admin/faq', verificarToken, verificarAdmin, async (req, res) => {
+  try {
+    const faqs = await prisma.faq.findMany({
+      orderBy: [
+        { ordem: 'asc' },
+        { createdAt: 'desc' }
+      ]
+    });
+    res.json(faqs);
+  } catch (err) {
+    console.error('Erro ao buscar FAQs:', err);
+    res.status(500).json({ error: 'Erro ao buscar FAQs' });
+  }
+});
+
+// POST /admin/faq - Criar nova FAQ
+app.post('/admin/faq', verificarToken, verificarAdmin, async (req, res) => {
+  const { pergunta, resposta, categoria, ordem, ativo } = req.body;
+
+  // Validações
+  if (!pergunta || !resposta || !categoria) {
+    return res.status(400).json({ 
+      error: 'Pergunta, resposta e categoria são obrigatórios' 
+    });
+  }
+
+  try {
+    const faq = await prisma.faq.create({
+      data: {
+        pergunta: validator.escape(pergunta.trim()),
+        resposta: resposta.trim(),
+        categoria: validator.escape(categoria.trim()),
+        ordem: ordem || 0,
+        ativo: ativo !== false,
+        visualizacoes: 0,
+        util: 0,
+        naoUtil: 0
+      }
+    });
+
+    res.status(201).json(faq);
+  } catch (err) {
+    console.error('Erro ao criar FAQ:', err);
+    res.status(500).json({ error: 'Erro ao criar FAQ' });
+  }
+});
+
+// PUT /admin/faq/:id - Atualizar FAQ
+app.put('/admin/faq/:id', verificarToken, verificarAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { pergunta, resposta, categoria, ordem, ativo } = req.body;
+
+  try {
+    const faq = await prisma.faq.update({
+      where: { id },
+      data: {
+        ...(pergunta && { pergunta: validator.escape(pergunta.trim()) }),
+        ...(resposta && { resposta: resposta.trim() }),
+        ...(categoria && { categoria: validator.escape(categoria.trim()) }),
+        ...(ordem !== undefined && { ordem }),
+        ...(ativo !== undefined && { ativo })
+      }
+    });
+
+    res.json(faq);
+  } catch (err) {
+    console.error('Erro ao atualizar FAQ:', err);
+    res.status(500).json({ error: 'Erro ao atualizar FAQ' });
+  }
+});
+
+// DELETE /admin/faq/:id - Deletar FAQ
+app.delete('/admin/faq/:id', verificarToken, verificarAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await prisma.faq.delete({
+      where: { id }
+    });
+    res.status(204).send();
+  } catch (err) {
+    console.error('Erro ao deletar FAQ:', err);
+    res.status(500).json({ error: 'Erro ao deletar FAQ' });
+  }
+});
+
+// GET /admin/faq/estatisticas - Estatísticas das FAQs
+app.get('/admin/faq/estatisticas', verificarToken, verificarAdmin, async (req, res) => {
+  try {
+    const stats = await prisma.faq.aggregate({
+      where: { ativo: true },
+      _sum: {
+        visualizacoes: true,
+        util: true,
+        naoUtil: true
+      },
+      _count: {
+        id: true
+      }
+    });
+
+    const totalFaqs = stats._count.id || 0;
+    const totalVisualizacoes = stats._sum.visualizacoes || 0;
+    const totalUtil = stats._sum.util || 0;
+    const totalNaoUtil = stats._sum.naoUtil || 0;
+    const totalAvaliacoes = totalUtil + totalNaoUtil;
+    const satisfacao = totalAvaliacoes > 0 ? 
+      Math.round((totalUtil / totalAvaliacoes) * 100) : 0;
+
+    const categorias = await prisma.faq.groupBy({
+      by: ['categoria'],
+      where: { ativo: true },
+      _count: {
+        categoria: true
+      }
+    });
+
+    res.json({
+      totalFaqs,
+      totalVisualizacoes,
+      satisfacao,
+      totalAvaliacoes,
+      categorias: categorias.map(cat => ({
+        nome: cat.categoria,
+        quantidade: cat._count.categoria
+      }))
+    });
+  } catch (err) {
+    console.error('Erro ao buscar estatísticas:', err);
+    res.status(500).json({ error: 'Erro ao buscar estatísticas' });
+  }
+});
+
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
