@@ -61,9 +61,8 @@ export const Title = styled.h1`
 export const Subtitle = styled.p`
   font-size: 1.1rem;
   color: #64748b;
-  margin: 0;
-  max-width: 500px;
   margin: 0 auto;
+  max-width: 500px;
   line-height: 1.5;
   
   @media (max-width: 768px) {
@@ -116,11 +115,14 @@ export const FilterTabs = styled.div`
   border-bottom: 1px solid #e2e8f0;
 `;
 
-export const FilterTab = styled.button`
+export const FilterTab = styled.button.attrs(props => ({
+  // Converte o "active" em booleano interno, sem repassar para DOM
+  $active: props.active === 'true'
+}))`
   padding: 0.75rem 1.5rem;
-  border: 2px solid ${props => props.active ? '#3b82f6' : '#e2e8f0'};
-  background: ${props => props.active ? '#3b82f6' : 'white'};
-  color: ${props => props.active ? 'white' : '#64748b'};
+  border: 2px solid ${({ $active }) => ($active ? '#3b82f6' : '#e2e8f0')};
+  background: ${({ $active }) => ($active ? '#3b82f6' : 'white')};
+  color: ${({ $active }) => ($active ? 'white' : '#64748b')};
   border-radius: 25px;
   cursor: pointer;
   font-weight: 600;
@@ -128,7 +130,7 @@ export const FilterTab = styled.button`
   transition: all 0.3s ease;
 
   &:hover {
-    ${props => !props.active && `
+    ${({ $active }) => !$active && `
       border-color: #3b82f6;
       background: #eff6ff;
       color: #1e40af;
@@ -188,7 +190,7 @@ export const ToggleIcon = styled.div`
   font-size: 1.2rem;
   font-weight: bold;
   color: #64748b;
-  background: ${({ isOpen }) => isOpen ? '#eff6ff' : '#f1f5f9'};
+  background: ${({ isOpen }) => (isOpen ? '#eff6ff' : '#f1f5f9')};
   border-radius: 50%;
   transition: all 0.3s ease;
   flex-shrink: 0;
@@ -207,10 +209,16 @@ export const Answer = styled.div`
   color: #475569;
   line-height: 1.6;
   border-top: 1px solid #e2e8f0;
-  
+
+  small {
+    display: block;
+    margin-top: 0.5rem;
+    color: #94a3b8;
+  }
+
   p {
     margin: 0 0 1rem 0;
-    
+
     &:last-child {
       margin-bottom: 0;
     }
