@@ -10,14 +10,16 @@ import {
   NotificationList, NotificationItem, EmptyState, NotificationBadge
 } from './AdminDashboard.styles';
 import api from '../../../services/api';
-import { BarChart3, Users, Package, FileText, Bell, CheckCircle, AlertCircle, Clock } from 'lucide-react';
+import { BarChart3, Users, Package, FileText, Bell, CheckCircle, AlertCircle, Clock, CircleAlertIcon, CircleHelp } from 'lucide-react';
+import { fa } from 'zod/v4/locales';
 
 function AdminDashboard() {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalProducts: 0,
-    pendingReports: 0
+    pendingReports: 0,
+    totalFaq: 0,
   });
   const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
@@ -25,6 +27,7 @@ function AdminDashboard() {
   const opcoesAdmin = [
     { titulo: 'Gerenciar Usuários', descricao: 'Visualize, adicione ou edite os usuários do sistema', rota: '/admin/usuarios', icon: Users, gradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', stats: stats.totalUsers },
     { titulo: 'Gerenciar Produtos', descricao: 'Adicione ou edite os produtos oferecidos', rota: '/admin/produtos', icon: Package, gradient: 'linear-gradient(135deg, #16a34a, #15803d)', stats: stats.totalProducts },
+    { titulo: 'Gerenciar FAQs', descricao: 'Gerencie o FAQ do seu site', rota: '/admin/faq', icon: CircleHelp, gradient: 'linear-gradient(135deg, #9333ea, #7c3aed)', stats: stats.totalFaq },
     { titulo: 'Relatórios', descricao: 'Acompanhe relatórios e estatísticas', rota: '/admin/relatorios', icon: BarChart3, gradient: 'linear-gradient(135deg, #9333ea, #7c3aed)', stats: stats.pendingReports }
   ];
 
@@ -40,10 +43,14 @@ function AdminDashboard() {
         const productsResponse = await api.get('/produtos');
         const totalProducts = productsResponse.data.length;
 
+        // Buscar FAQs
+        const faqsResponse = await api.get('/faq');
+        const totalFaq = faqsResponse.data.length;
+
         // Exemplo de pendentes (substituir pelo endpoint real)
         const pendingReports = 5;
 
-        setStats({ totalUsers, totalProducts, pendingReports });
+        setStats({ totalUsers, totalProducts, totalFaq, pendingReports });
 
         // Exemplo de notificações
         setNotifications([
