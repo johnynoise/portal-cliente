@@ -53,7 +53,7 @@ export default function Products() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [priceFilter, setPriceFilter] = useState('all');
   const [activeFilters, setActiveFilters] = useState([]);
-  
+
   const navigate = useNavigate();
 
   // Mock categories - substitua pela sua lógica real
@@ -63,13 +63,6 @@ export default function Products() {
     { id: 'sensores', name: 'Sensores', count: 0 },
     { id: 'sistemas', name: 'Sistemas', count: 0 },
     { id: 'acessorios', name: 'Acessórios', count: 0 }
-  ];
-
-  const priceRanges = [
-    { id: 'all', name: 'Todos os preços' },
-    { id: 'low', name: 'Até R$ 1.000' },
-    { id: 'medium', name: 'R$ 1.000 - R$ 5.000' },
-    { id: 'high', name: 'Acima de R$ 5.000' }
   ];
 
   useEffect(() => {
@@ -221,31 +214,6 @@ export default function Products() {
             ))}
           </CategoryFilter>
 
-          <PriceRange>
-            <select
-              value={priceFilter}
-              onChange={(e) => setPriceFilter(e.target.value)}
-            >
-              {priceRanges.map(range => (
-                <option key={range.id} value={range.id}>
-                  {range.name}
-                </option>
-              ))}
-            </select>
-          </PriceRange>
-
-          <SortContainer>
-            <SortSelect
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="nome">Nome A-Z</option>
-              <option value="preco-menor">Menor Preço</option>
-              <option value="preco-maior">Maior Preço</option>
-              <option value="rating">Melhor Avaliado</option>
-            </SortSelect>
-          </SortContainer>
-
           <ViewToggle>
             <ViewButton
               active={viewMode === 'grid'}
@@ -296,12 +264,12 @@ export default function Products() {
                   {product.imagemUrl ? (
                     <ProductImage src={product.imagemUrl} alt={product.nome} />
                   ) : (
-                    <ProductImage 
-                      src={`/api/placeholder/300/200?text=${encodeURIComponent(product.nome)}`} 
-                      alt={product.nome} 
+                    <ProductImage
+                      src={`/api/placeholder/300/200?text=${encodeURIComponent(product.nome)}`}
+                      alt={product.nome}
                     />
                   )}
-                  
+
                   {product.novo && <ProductBadge type="new">Novo</ProductBadge>}
                   {product.promocao && <ProductBadge type="sale">Promoção</ProductBadge>}
                   {!product.disponivel && <ProductBadge type="unavailable">Indisponível</ProductBadge>}
@@ -309,7 +277,7 @@ export default function Products() {
 
                 <ProductContent viewMode={viewMode}>
                   <ProductName>{product.nome}</ProductName>
-                  
+
                   {product.descricao && (
                     <ProductDescription>{product.descricao}</ProductDescription>
                   )}
@@ -320,20 +288,25 @@ export default function Products() {
                     ))}
                   </ProductFeatures>
 
-                  <ProductPrice>
-                    {formatPrice(product.preco)}
-                    {product.promocao && (
-                      <span className="original-price">
-                        {formatPrice(product.preco * 1.2)}
-                      </span>
-                    )}
-                  </ProductPrice>
+                  {/* Removido preço, promoção e avaliação */}
 
-                  {product.rating && (
-                    <div className="rating">
-                      ⭐ {product.rating} ({Math.floor(Math.random() * 50) + 10} avaliações)
-                    </div>
-                  )}
+                  <div className="documents">
+                    {product.certificacao && (
+                      <a href={product.certificacao} target="_blank" rel="noreferrer">
+                        📄 Certificação
+                      </a>
+                    )}
+                    {product.manual && (
+                      <a href={product.manual} target="_blank" rel="noreferrer">
+                        📘 Manual
+                      </a>
+                    )}
+                    {product.firmware && (
+                      <a href={product.firmware} target="_blank" rel="noreferrer">
+                        🔧 Firmware
+                      </a>
+                    )}
+                  </div>
                 </ProductContent>
 
                 <ProductActions viewMode={viewMode}>
@@ -349,12 +322,13 @@ export default function Products() {
                   <ActionButton
                     onClick={(e) => {
                       e.stopPropagation();
-                      toast.info('Adicionado aos favoritos!');
+                      toast.info('Solicitação de suporte enviada!');
                     }}
                   >
-                    ♡ Favoritar
+                    📩 Solicitar Suporte
                   </ActionButton>
                 </ProductActions>
+
               </ProductCard>
             ))}
           </ProductsGrid>

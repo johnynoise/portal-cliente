@@ -12,6 +12,7 @@ import {
 import api from '../../../services/api';
 import { BarChart3, Users, Package, FileText, Bell, CheckCircle, AlertCircle, Clock, CircleAlertIcon, CircleHelp } from 'lucide-react';
 import { fa } from 'zod/v4/locales';
+import LoadingSpinner from '../../../components/TelaLoading/Loading';
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -80,7 +81,8 @@ function AdminDashboard() {
 
   const dismissNotification = (id) => setNotifications(notifications.filter(n => n.id !== id));
 
-  if (loading) return <p>Carregando dados do dashboard...</p>;
+if (loading) return <LoadingSpinner />; // Troque o retorno do loading
+
 
   return (
     <Container>
