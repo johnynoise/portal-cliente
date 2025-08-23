@@ -21,6 +21,7 @@ import RecuperarSenha from './pages/RecuperarSenha';
 import FAQ from './pages/FAQ/FAQ';
 import RedefinirSenha from './pages/RedefinirSenha';
 import Suporte from './pages/Suporte';
+import AdminFAQ from './pages/Admins/AdminFAQ';
 import './index.css';
 
 createRoot(document.getElementById('root')).render(
@@ -52,6 +53,14 @@ createRoot(document.getElementById('root')).render(
 
           />
           <Route path="/produtos/:id" element={<PaginaDefault />} />
+          <Route
+            path="/admin/faq"
+            element={
+              <PrivateRoute roleRequired={'admin'}>
+                <AdminFAQ />
+              </PrivateRoute>
+            }
+          />
           <Route path="/admin/usuarios" element={<PrivateRoute><AdminUsuarios/></PrivateRoute>} />
           <Route
             path="/admin/produtos"
