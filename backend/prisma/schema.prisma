@@ -29,12 +29,29 @@ model Produto {
   id               String    @id @default(auto()) @map("_id") @db.ObjectId
   nome             String
   descricao        String
+  categoria        String?
+  fabricante       String?
   linkDocumentacao String
   linkCertificacao String?
   imagemUrl        String?
+  galeria          String[]  @default([])
   status           String    @default("ativo")
   versao           String    @default("1.0.0")
   totalClientes    Int       @default(0)
+  
+  // Especificações técnicas
+  especificacoes   Json?     // Objeto com especificações técnicas flexíveis
+  
+  // Documentos e Downloads
+  documentos       Json[]    @default([]) // Array de {tipo, nome, url, tamanho, dataUpload}
+  
+  // Certificações e Portarias
+  certificacoes    Json[]    @default([]) // Array de {tipo, numero, orgao, dataValidade, url}
+  
+  // Metadados
+  visualizacoes    Int       @default(0)
+  downloads        Int       @default(0)
+  
   criadoEm         DateTime  @default(now())
   atualizadoEm     DateTime? @updatedAt
 }
