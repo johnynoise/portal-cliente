@@ -30,11 +30,19 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  gap: 1rem;
 
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 1rem;
     align-items: stretch;
+
+    & > div {
+      width: 100%;
+      
+      button {
+        width: 100%;
+      }
+    }
   }
 `;
 
@@ -56,6 +64,15 @@ export const StatsCards = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const StatCard = styled.div`
@@ -272,13 +289,18 @@ export const ActionButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-width: 40px;
 
   ${props => {
     if (props.danger) {
       return `
         background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
         color: white;
-        &:hover {
+        &:hover:not(:disabled) {
           transform: translateY(-1px);
           box-shadow: 0 4px 12px rgba(245, 101, 101, 0.3);
         }
@@ -287,7 +309,7 @@ export const ActionButton = styled.button`
       return `
         background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
         color: white;
-        &:hover {
+        &:hover:not(:disabled) {
           transform: translateY(-1px);
           box-shadow: 0 4px 12px rgba(237, 137, 54, 0.3);
         }
@@ -296,7 +318,7 @@ export const ActionButton = styled.button`
       return `
         background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
         color: white;
-        &:hover {
+        &:hover:not(:disabled) {
           transform: translateY(-1px);
           box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
         }
@@ -304,8 +326,18 @@ export const ActionButton = styled.button`
     }
   }}
 
-  &:active {
+  &:active:not(:disabled) {
     transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.625rem 1rem;
+    font-size: 0.9rem;
   }
 `;
 
@@ -314,14 +346,151 @@ export const StatusBadge = styled.span`
   border-radius: 20px;
   font-size: 0.875rem;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   
   ${props => props.status === 'active' ? `
     background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
     color: white;
+    box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
   ` : `
     background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
     color: white;
+    box-shadow: 0 2px 8px rgba(160, 174, 192, 0.3);
   `}
+`;
+
+export const RoleBadge = styled.span`
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  
+  ${props => props.role === 'admin' ? `
+    background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(159, 122, 234, 0.3);
+  ` : `
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(66, 153, 225, 0.3);
+  `}
+`;
+
+export const Tooltip = styled.div`
+  position: relative;
+  display: inline-block;
+  
+  &:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+`;
+
+export const TooltipText = styled.span`
+  visibility: hidden;
+  opacity: 0;
+  background-color: #2d3748;
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 0.875rem;
+  transition: opacity 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  
+  &::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #2d3748 transparent transparent transparent;
+  }
+`;
+
+export const ExportButton = styled.button`
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: center;
+  }
+`;
+
+export const SkeletonRow = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  gap: 1rem;
+`;
+
+export const SkeletonCell = styled.div`
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+  border-radius: 4px;
+  height: ${props => props.height || '20px'};
+  width: ${props => props.width || '100%'};
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+`;
+
+export const FilterBadge = styled.span`
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
 `;
 
 export const EmptyState = styled.div`
@@ -342,6 +511,19 @@ export const EmptyState = styled.div`
   p {
     color: #4a5568;
     font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 3rem 1.5rem;
+
+    h3 {
+      font-size: 1.25rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
   }
 `;
 

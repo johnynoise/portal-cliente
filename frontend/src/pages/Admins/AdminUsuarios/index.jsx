@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import api from '../../../services/api';
@@ -22,6 +22,7 @@ import {
   ActionButton,
   ActionButtons,
   StatusBadge,
+  RoleBadge,
   EmptyState,
   Pagination,
   PageButton,
@@ -33,7 +34,13 @@ import {
   StatLabel,
   SortIcon,
   BulkActions,
-  Checkbox
+  Checkbox,
+  Tooltip,
+  TooltipText,
+  ExportButton,
+  SkeletonRow,
+  SkeletonCell,
+  FilterBadge
 } from './AdminUsuarios.styles';
 
 export default function UsuariosAdmin() {
@@ -50,6 +57,7 @@ export default function UsuariosAdmin() {
   const [editingUser, setEditingUser] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
+  const [actionLoading, setActionLoading] = useState({});
   const navigate = useNavigate();
 
   const itemsPerPage = 10;
@@ -57,6 +65,14 @@ export default function UsuariosAdmin() {
   useEffect(() => {
     fetchUsuarios();
   }, []);
+
+  // Debounce search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCurrentPage(1); // Reset to first page on search
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   async function fetchUsuarios() {
     try {
@@ -177,6 +193,20 @@ export default function UsuariosAdmin() {
     setShowConfirm(true);
   };
 
+  const handleSendReset = useCallback(async (usuario) => {
+    const loadingKey = `reset-${usuario.id}`;
+    setActionLoading(prev => ({ ...prev, [loadingKey]: true }));
+    
+    try {
+      await api.post('/auth/recuperar-senha', { email: usuario.email });
+      toast.success(`E-mail de redefinição enviado para ${usuario.name}`);
+    } catch (error) {
+      toast.error('Erro ao enviar e-mail de redefinição');
+    } finally {
+      setActionLoading(prev => ({ ...prev, [loadingKey]: false }));
+    }
+  }, []);
+
   const deleteUser = async (userId) => {
     try {
       await api.delete(`/admin/usuarios/${userId}`);
@@ -219,15 +249,81 @@ export default function UsuariosAdmin() {
     setShowConfirm(true);
   };
 
-  if (loading) return <Loading />;
+  const handleExportCSV = useCallback(() => {
+    const csvData = sortedUsers.map(user => ({
+      Nome: user.name,
+      Email: user.email,
+      Função: user.role === 'admin' ? 'Administrador' : 'Cliente',
+      Empresa: user.empresa || '',
+      Telefone: user.telefone || '',
+      Status: user.status === 'active' ? 'Ativo' : 'Inativo'
+    }));
+
+    const headers = Object.keys(csvData[0]).join(',');
+    const rows = csvData.map(row => Object.values(row).join(',')).join('\n');
+    const csv = `${headers}\n${rows}`;
+
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `usuarios_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success('Exportação concluída com sucesso!');
+  }, [sortedUsers]);
+
+  const getRoleIcon = (role) => {
+    return role === 'admin' ? '👑' : '👤';
+  };
+
+  const getStatusIcon = (status) => {
+    return status === 'active' ? '✓' : '○';
+  };
+
+  if (loading) {
+    return (
+      <Container>
+        <Header>
+          <Title>Gerenciamento de Usuários</Title>
+        </Header>
+        <TableContainer>
+          <UsersTable>
+            <tbody>
+              {[1, 2, 3, 4, 5].map(i => (
+                <SkeletonRow key={i}>
+                  <SkeletonCell width="50px" height="20px" />
+                  <SkeletonCell width="150px" height="20px" />
+                  <SkeletonCell width="200px" height="20px" />
+                  <SkeletonCell width="100px" height="20px" />
+                  <SkeletonCell width="120px" height="20px" />
+                  <SkeletonCell width="100px" height="20px" />
+                  <SkeletonCell width="80px" height="20px" />
+                  <SkeletonCell width="200px" height="20px" />
+                </SkeletonRow>
+              ))}
+            </tbody>
+          </UsersTable>
+        </TableContainer>
+      </Container>
+    );
+  }
 
   return (
     <Container>
       <Header>
         <Title>Gerenciamento de Usuários</Title>
-        <AddButton onClick={handleAddUser}>
-          + Novo Usuário
-        </AddButton>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <ExportButton onClick={handleExportCSV} disabled={sortedUsers.length === 0}>
+            📊 Exportar CSV
+          </ExportButton>
+          <AddButton onClick={handleAddUser}>
+            + Novo Usuário
+          </AddButton>
+        </div>
       </Header>
 
       <StatsCards>
@@ -252,7 +348,7 @@ export default function UsuariosAdmin() {
       <SearchAndFilters>
         <SearchInput
           type="text"
-          placeholder="Buscar usuários por nome, email ou empresa..."
+          placeholder="🔍 Buscar por nome, email ou empresa..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -261,16 +357,16 @@ export default function UsuariosAdmin() {
           onChange={(e) => setFilterRole(e.target.value)}
         >
           <option value="all">Todas as funções</option>
-          <option value="admin">Administrador</option>
-          <option value="cliente">Cliente/Usuário</option>
+          <option value="admin">👑 Administrador</option>
+          <option value="cliente">👤 Cliente/Usuário</option>
         </FilterSelect>
         <FilterSelect
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
         >
           <option value="all">Todos os status</option>
-          <option value="active">Ativo</option>
-          <option value="inactive">Inativo</option>
+          <option value="active">✓ Ativo</option>
+          <option value="inactive">○ Inativo</option>
         </FilterSelect>
       </SearchAndFilters>
 
@@ -285,8 +381,20 @@ export default function UsuariosAdmin() {
 
       {sortedUsers.length === 0 ? (
         <EmptyState>
-          <h3>Nenhum usuário encontrado</h3>
+          <h3>🔍 Nenhum usuário encontrado</h3>
           <p>Tente ajustar os filtros de busca ou adicione um novo usuário.</p>
+          {(searchTerm || filterRole !== 'all' || filterStatus !== 'all') && (
+            <ActionButton 
+              onClick={() => {
+                setSearchTerm('');
+                setFilterRole('all');
+                setFilterStatus('all');
+              }}
+              style={{ marginTop: '1rem' }}
+            >
+              Limpar Filtros
+            </ActionButton>
+          )}
         </EmptyState>
       ) : (
         <>
@@ -323,7 +431,7 @@ export default function UsuariosAdmin() {
                   <TableHeader>Empresa</TableHeader>
                   <TableHeader>Telefone</TableHeader>
                   <TableHeader>Status</TableHeader>
-                  <TableHeader style={{ width: '150px' }}>Ações</TableHeader>
+                  <TableHeader style={{ width: '200px' }}>Ações</TableHeader>
                 </TableRow>
               </thead>
               <tbody>
@@ -336,38 +444,57 @@ export default function UsuariosAdmin() {
                         onChange={(e) => handleSelectUser(usuario.id, e.target.checked)}
                       />
                     </TableCell>
-                    <TableCell>{usuario.name}</TableCell>
+                    <TableCell><strong>{usuario.name}</strong></TableCell>
                     <TableCell>{usuario.email}</TableCell>
-                    <TableCell>{usuario.role}</TableCell>
+                    <TableCell>
+                      <RoleBadge role={usuario.role}>
+                        {getRoleIcon(usuario.role)} {usuario.role === 'admin' ? 'Admin' : 'Cliente'}
+                      </RoleBadge>
+                    </TableCell>
                     <TableCell>{usuario.empresa || '-'}</TableCell>
                     <TableCell>{usuario.telefone || '-'}</TableCell>
                     <TableCell>
                       <StatusBadge status={usuario.status || 'active'}>
-                        {usuario.status === 'active' ? 'Ativo' : 'Inativo'}
+                        {getStatusIcon(usuario.status || 'active')} {usuario.status === 'active' ? 'Ativo' : 'Inativo'}
                       </StatusBadge>
                     </TableCell>
                     <TableCell>
                       <ActionButtons>
-                        <ActionButton onClick={() => handleEditUser(usuario)}>
-                          Editar
-                        </ActionButton>
-                        <ActionButton 
-                          secondary
-                          onClick={() => handleToggleStatus(usuario)}
-                        >
-                          {usuario.status === 'active' ? 'Desativar' : 'Ativar'}
-                        </ActionButton>
-                        <ActionButton 
-                          onClick={() => handleSendReset(usuario)}
-                        >
-                          Enviar Redefinição
-                        </ActionButton>
-                        <ActionButton 
-                          danger
-                          onClick={() => handleDeleteUser(usuario)}
-                        >
-                          Excluir
-                        </ActionButton>
+                        <Tooltip>
+                          <ActionButton onClick={() => handleEditUser(usuario)}>
+                            ✏️
+                          </ActionButton>
+                          <TooltipText className="tooltip-text">Editar usuário</TooltipText>
+                        </Tooltip>
+                        <Tooltip>
+                          <ActionButton 
+                            secondary
+                            onClick={() => handleToggleStatus(usuario)}
+                          >
+                            {usuario.status === 'active' ? '⏸' : '▶'}
+                          </ActionButton>
+                          <TooltipText className="tooltip-text">
+                            {usuario.status === 'active' ? 'Desativar' : 'Ativar'}
+                          </TooltipText>
+                        </Tooltip>
+                        <Tooltip>
+                          <ActionButton 
+                            onClick={() => handleSendReset(usuario)}
+                            disabled={actionLoading[`reset-${usuario.id}`]}
+                          >
+                            {actionLoading[`reset-${usuario.id}`] ? '⏳' : '🔑'}
+                          </ActionButton>
+                          <TooltipText className="tooltip-text">Enviar redefinição de senha</TooltipText>
+                        </Tooltip>
+                        <Tooltip>
+                          <ActionButton 
+                            danger
+                            onClick={() => handleDeleteUser(usuario)}
+                          >
+                            🗑️
+                          </ActionButton>
+                          <TooltipText className="tooltip-text">Excluir usuário</TooltipText>
+                        </Tooltip>
                       </ActionButtons>
                     </TableCell>
                   </TableRow>
@@ -382,36 +509,42 @@ export default function UsuariosAdmin() {
               <UserCard key={usuario.id}>
                 <div className="card-header">
                   <h4>{usuario.name}</h4>
-                  <StatusBadge status={usuario.status || 'active'}>
-                    {usuario.status === 'active' ? 'Ativo' : 'Inativo'}
-                  </StatusBadge>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <RoleBadge role={usuario.role}>
+                      {getRoleIcon(usuario.role)}
+                    </RoleBadge>
+                    <StatusBadge status={usuario.status || 'active'}>
+                      {getStatusIcon(usuario.status || 'active')}
+                    </StatusBadge>
+                  </div>
                 </div>
                 <div className="card-content">
                   <p><strong>Email:</strong> {usuario.email}</p>
-                  <p><strong>Função:</strong> {usuario.role}</p>
+                  <p><strong>Função:</strong> {usuario.role === 'admin' ? 'Administrador' : 'Cliente'}</p>
                   {usuario.empresa && <p><strong>Empresa:</strong> {usuario.empresa}</p>}
                   {usuario.telefone && <p><strong>Telefone:</strong> {usuario.telefone}</p>}
                 </div>
                 <ActionButtons>
                   <ActionButton onClick={() => handleEditUser(usuario)}>
-                    Editar
+                    ✏️ Editar
                   </ActionButton>
                   <ActionButton 
                     secondary
                     onClick={() => handleToggleStatus(usuario)}
                   >
-                    {usuario.status === 'active' ? 'Desativar' : 'Ativar'}
+                    {usuario.status === 'active' ? '⏸ Desativar' : '▶ Ativar'}
                   </ActionButton>
                   <ActionButton 
                     onClick={() => handleSendReset(usuario)}
+                    disabled={actionLoading[`reset-${usuario.id}`]}
                   >
-                    Enviar Redefinição
+                    {actionLoading[`reset-${usuario.id}`] ? '⏳' : '🔑'} Reset
                   </ActionButton>
                   <ActionButton 
                     danger
                     onClick={() => handleDeleteUser(usuario)}
                   >
-                    Excluir
+                    🗑️ Excluir
                   </ActionButton>
                 </ActionButtons>
               </UserCard>
@@ -464,8 +597,17 @@ export default function UsuariosAdmin() {
       {/* Dialog de Confirmação */}
       {showConfirm && confirmAction && (
         <ConfirmDialog
+          title={
+            confirmAction.type === 'delete' ? '⚠️ Excluir Usuário' :
+            confirmAction.type === 'bulk-delete' ? '⚠️ Excluir Múltiplos Usuários' :
+            confirmAction.type === 'toggle' ? '🔄 Alterar Status' : 'Confirmação'
+          }
           message={confirmAction.message}
           type={confirmAction.type === 'delete' || confirmAction.type === 'bulk-delete' ? 'danger' : 'warning'}
+          confirmText={
+            confirmAction.type === 'delete' || confirmAction.type === 'bulk-delete' ? 'Sim, excluir' : 'Confirmar'
+          }
+          cancelText="Cancelar"
           onConfirm={() => {
             confirmAction.onConfirm();
             setShowConfirm(false);
@@ -481,12 +623,4 @@ export default function UsuariosAdmin() {
   );
 }
 
-// helpers
-async function handleSendReset(usuario) {
-  try {
-    await api.post('/auth/recuperar-senha', { email: usuario.email });
-    toast.success('E-mail de redefinição enviado');
-  } catch (error) {
-    toast.error('Erro ao enviar e-mail de redefinição');
-  }
-}
+// Helpers movidos para fora do componente (não precisa remover a função do componente)
