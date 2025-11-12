@@ -109,6 +109,16 @@ export const TopBar = styled.div`
     align-items: center;
     margin-bottom: 2rem;
   }
+
+  & > div {
+    @media (max-width: 767px) {
+      width: 100%;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }
 `;
 
 export const SearchAndFilters = styled.div`
@@ -272,30 +282,43 @@ export const ProductCard = styled.div`
   padding: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid #e9ecef;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   min-height: 280px;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+    &::before {
+      transform: scaleX(1);
+    }
   }
 
   @media (min-width: 768px) {
     border-radius: 12px;
     padding: 1.25rem;
-    min-height: 320px;
-
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    }
+    min-height: 420px;
   }
 
   @media (min-width: 1200px) {
     padding: 1.5rem;
-    min-height: 340px;
+    min-height: 450px;
   }
 `;
 
@@ -475,11 +498,25 @@ export const EmptyState = styled.div`
     margin: 0 0 0.5rem 0;
     color: #212529;
     font-weight: 600;
+    font-size: 1.25rem;
   }
 
   p {
     color: #6c757d;
     margin-bottom: 2rem;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 3rem 1.5rem;
+
+    h3 {
+      font-size: 1.1rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
   }
 `;
 
@@ -510,4 +547,149 @@ export const LoadingSpinner = styled.div`
     color: #6c757d;
     margin: 0;
   }
+`;
+
+export const Tooltip = styled.div`
+  position: relative;
+  display: inline-block;
+  
+  &:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+`;
+
+export const TooltipText = styled.span`
+  visibility: hidden;
+  opacity: 0;
+  background-color: #2d3748;
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 0.875rem;
+  transition: opacity 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  
+  &::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #2d3748 transparent transparent transparent;
+  }
+`;
+
+export const ExportButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
+export const SkeletonCard = styled.div`
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e9ecef;
+`;
+
+export const SkeletonElement = styled.div`
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+  border-radius: 4px;
+  height: ${props => props.height || '20px'};
+  width: ${props => props.width || '100%'};
+  margin-bottom: ${props => props.marginBottom || '0'};
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+`;
+
+export const ProductImage = styled.div`
+  width: 100%;
+  height: 180px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background: ${props => props.hasImage ? 'transparent' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
+
+  .placeholder {
+    font-size: 3rem;
+    color: white;
+  }
+
+  @media (min-width: 768px) {
+    height: 200px;
+  }
+`;
+
+export const StatusBadgeProduct = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: ${props => props.color};
+  color: white;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px ${props => props.color}40;
 `;

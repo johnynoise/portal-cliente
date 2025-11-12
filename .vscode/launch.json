@@ -73,5 +73,6 @@
             ],
             "stopAll": true
         }
-    ]
+    ],
+    "stopProcess": "node"
 }

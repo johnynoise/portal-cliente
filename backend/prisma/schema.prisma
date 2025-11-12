@@ -26,12 +26,17 @@ model User {
 }
 
 model Produto {
-  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
   nome             String
   descricao        String
   linkDocumentacao String
-  criadoEm         DateTime @default(now())
-  imagemUrl       String?
+  linkCertificacao String?
+  imagemUrl        String?
+  status           String    @default("ativo")
+  versao           String    @default("1.0.0")
+  totalClientes    Int       @default(0)
+  criadoEm         DateTime  @default(now())
+  atualizadoEm     DateTime? @updatedAt
 }
 
 model Faq {

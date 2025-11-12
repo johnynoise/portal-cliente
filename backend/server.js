@@ -35,6 +35,15 @@ function verificarToken(req, res, next) {
     next();
   });
 }
+
+// Middleware para permitir só admin
+function verificarAdmin(req, res, next) {
+  if (req.usuario.role !== 'admin') {
+    return res.status(403).json({ error: 'Acesso restrito a administradores.' });
+  }
+  next();
+}
+
 app.get('/admin', verificarToken, verificarAdmin, (req, res) => {
   res.json({ message: 'Acesso autorizado para administrador.' });
 });
@@ -218,15 +227,6 @@ app.delete('/admin/usuarios/:id', verificarToken, verificarAdmin, async (req, re
 });
 
 
-
-// Middleware para permitir só admin
-function verificarAdmin(req, res, next) {
-  if (req.usuario.role !== 'admin') {
-    return res.status(403).json({ error: 'Acesso restrito a administradores.' });
-  }
-  next();
-}
-
 // Rota para listar usuários
 app.get('/usuarios', verificarToken, async (req, res) => {
   const users = await prisma.user.findMany();
@@ -324,10 +324,10 @@ app.post('/login', async (req, res) => {
 
 app.post('/produtos', verificarToken, verificarAdmin, async (req, res) => {
    console.log('Body recebido:', req.body);
-  const { nome, descricao, linkDocumentacao, imagemUrl } = req.body;
+  const { nome, descricao, linkDocumentacao, imagemUrl, linkCertificacao, status, versao } = req.body;
 
-  if (!nome || !descricao || !linkDocumentacao || !imagemUrl) {
-    return res.status(400).json({ error: 'Todos os campos são obrigatórios, incluindo a imagem.' });
+  if (!nome || !descricao || !linkDocumentacao) {
+    return res.status(400).json({ error: 'Nome, descrição e link de documentação são obrigatórios.' });
   }
 
   try {
@@ -336,7 +336,11 @@ app.post('/produtos', verificarToken, verificarAdmin, async (req, res) => {
         nome,
         descricao,
         linkDocumentacao,
-        imagemUrl, // aqui também
+        imagemUrl: imagemUrl || null,
+        linkCertificacao: linkCertificacao || null,
+        status: status || 'ativo',
+        versao: versao || '1.0.0',
+        totalClientes: 0
       }
     });
     res.status(201).json(produto);
@@ -379,12 +383,22 @@ app.delete('/produtos/:id', verificarToken, verificarAdmin, async (req, res) => 
 // Rota para atualizar produto
 app.put('/produtos/:id', verificarToken, verificarAdmin, async (req, res) => {
   const { id } = req.params;
-  const { nome, descricao, linkDocumentacao } = req.body;
+  const { nome, descricao, linkDocumentacao, imagemUrl, linkCertificacao, status, versao, totalClientes } = req.body;
 
   try {
+    const data = {};
+    if (nome !== undefined) data.nome = nome;
+    if (descricao !== undefined) data.descricao = descricao;
+    if (linkDocumentacao !== undefined) data.linkDocumentacao = linkDocumentacao;
+    if (imagemUrl !== undefined) data.imagemUrl = imagemUrl;
+    if (linkCertificacao !== undefined) data.linkCertificacao = linkCertificacao;
+    if (status !== undefined) data.status = status;
+    if (versao !== undefined) data.versao = versao;
+    if (totalClientes !== undefined) data.totalClientes = totalClientes;
+
     const produto = await prisma.produto.update({
       where: { id },
-      data: { nome, descricao, linkDocumentacao }
+      data
     });
     res.json(produto);
   } catch (err) {
@@ -591,6 +605,20 @@ app.get('/admin/faq/estatisticas', verificarToken, verificarAdmin, async (req, r
   }
 });
 
+// Middleware de tratamento de erros global
+app.use((err, req, res, next) => {
+  console.error('Erro não tratado:', err);
+  res.status(500).json({ error: 'Erro interno do servidor', message: err.message });
+});
+
+// Handler para erros não capturados
+process.on('uncaughtException', (err) => {
+  console.error('Erro não capturado:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Promise rejection não tratada:', reason);
+});
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
