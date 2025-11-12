@@ -253,25 +253,7 @@ export const BadgeGroup = styled.div`
   flex-wrap: wrap;
 `;
 
-const getBadgeColors = (variant) => {
-  const colors = {
-    success: { bg: '#d4edda', border: '#28a745', text: '#155724' },
-    warning: { bg: '#fff3cd', border: '#ffc107', text: '#856404' },
-    danger: { bg: '#f8d7da', border: '#dc3545', text: '#721c24' },
-    default: { bg: '#e7f3ff', border: '#007bff', text: '#004085' }
-  };
-  return colors[variant] || colors.default;
-};
-
 export const StatusBadge = styled.span`
-  ${props => {
-    const colors = getBadgeColors(props.variant);
-    return css`
-      background: ${colors.bg};
-      color: ${colors.text};
-      border: 2px solid ${colors.border};
-    `;
-  }}
   padding: 0.5rem 1rem;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -281,6 +263,35 @@ export const StatusBadge = styled.span`
   gap: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+
+  ${props => {
+    switch(props.variant) {
+      case 'success':
+        return css`
+          background: #d4edda;
+          color: #155724;
+          border: 2px solid #28a745;
+        `;
+      case 'warning':
+        return css`
+          background: #fff3cd;
+          color: #856404;
+          border: 2px solid #ffc107;
+        `;
+      case 'danger':
+        return css`
+          background: #f8d7da;
+          color: #721c24;
+          border: 2px solid #dc3545;
+        `;
+      default:
+        return css`
+          background: #e7f3ff;
+          color: #004085;
+          border: 2px solid #007bff;
+        `;
+    }
+  }}
 `;
 
 export const VersionBadge = styled.span`
