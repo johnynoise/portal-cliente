@@ -76,7 +76,7 @@ export default function UsuariosAdmin() {
                            user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            user.empresa?.toLowerCase().includes(searchTerm.toLowerCase());
       
-      const matchesRole = filterRole === 'all' || user.role === filterRole;
+  const matchesRole = filterRole === 'all' || user.role === filterRole;
       const matchesStatus = filterStatus === 'all' || user.status === filterStatus;
       
       return matchesSearch && matchesRole && matchesStatus;
@@ -112,7 +112,7 @@ export default function UsuariosAdmin() {
   // Estatísticas
   const stats = useMemo(() => {
     const total = usuarios.length;
-    const active = usuarios.filter(u => u.status === 'active').length;
+    const active = usuarios.filter(u => (u.status || 'active') === 'active').length;
     const inactive = usuarios.filter(u => u.status === 'inactive').length;
     const admins = usuarios.filter(u => u.role === 'admin').length;
     
@@ -262,8 +262,7 @@ export default function UsuariosAdmin() {
         >
           <option value="all">Todas as funções</option>
           <option value="admin">Administrador</option>
-          <option value="user">Usuário</option>
-          <option value="manager">Gerente</option>
+          <option value="cliente">Cliente/Usuário</option>
         </FilterSelect>
         <FilterSelect
           value={filterStatus}
@@ -359,6 +358,11 @@ export default function UsuariosAdmin() {
                           {usuario.status === 'active' ? 'Desativar' : 'Ativar'}
                         </ActionButton>
                         <ActionButton 
+                          onClick={() => handleSendReset(usuario)}
+                        >
+                          Enviar Redefinição
+                        </ActionButton>
+                        <ActionButton 
                           danger
                           onClick={() => handleDeleteUser(usuario)}
                         >
@@ -397,6 +401,11 @@ export default function UsuariosAdmin() {
                     onClick={() => handleToggleStatus(usuario)}
                   >
                     {usuario.status === 'active' ? 'Desativar' : 'Ativar'}
+                  </ActionButton>
+                  <ActionButton 
+                    onClick={() => handleSendReset(usuario)}
+                  >
+                    Enviar Redefinição
                   </ActionButton>
                   <ActionButton 
                     danger
@@ -456,6 +465,7 @@ export default function UsuariosAdmin() {
       {showConfirm && confirmAction && (
         <ConfirmDialog
           message={confirmAction.message}
+          type={confirmAction.type === 'delete' || confirmAction.type === 'bulk-delete' ? 'danger' : 'warning'}
           onConfirm={() => {
             confirmAction.onConfirm();
             setShowConfirm(false);
@@ -469,4 +479,14 @@ export default function UsuariosAdmin() {
       )}
     </Container>
   );
+}
+
+// helpers
+async function handleSendReset(usuario) {
+  try {
+    await api.post('/auth/recuperar-senha', { email: usuario.email });
+    toast.success('E-mail de redefinição enviado');
+  } catch (error) {
+    toast.error('Erro ao enviar e-mail de redefinição');
+  }
 }

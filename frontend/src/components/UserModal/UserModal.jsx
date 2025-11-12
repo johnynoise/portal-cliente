@@ -25,7 +25,7 @@ export default function UserModal({ user, onClose, onSave }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    role: 'user',
+    role: 'cliente',
     empresa: '',
     telefone: '',
     status: 'active',
@@ -38,7 +38,7 @@ export default function UserModal({ user, onClose, onSave }) {
       setFormData({
         name: user.name || '',
         email: user.email || '',
-        role: user.role || 'user',
+  role: user.role || 'cliente',
         empresa: user.empresa || '',
         telefone: user.telefone || '',
         status: user.status || 'active',
@@ -65,8 +65,8 @@ export default function UserModal({ user, onClose, onSave }) {
       newErrors.password = 'Senha é obrigatória para novos usuários';
     }
 
-    if (formData.password && formData.password.length < 6) {
-      newErrors.password = 'Senha deve ter pelo menos 6 caracteres';
+    if (formData.password && formData.password.length < 8) {
+      newErrors.password = 'Senha deve ter pelo menos 8 caracteres';
     }
 
     if (formData.password && formData.password !== formData.confirmPassword) {
@@ -225,8 +225,7 @@ export default function UserModal({ user, onClose, onSave }) {
                 onChange={handleInputChange}
                 hasError={!!errors.role}
               >
-                <option value="user">Usuário</option>
-                <option value="manager">Gerente</option>
+                <option value="cliente">Cliente/Usuário</option>
                 <option value="admin">Administrador</option>
               </Select>
               {errors.role && <ErrorMessage>{errors.role}</ErrorMessage>}
@@ -295,6 +294,11 @@ export default function UserModal({ user, onClose, onSave }) {
                 placeholder="Digite a senha"
                 hasError={!!errors.password}
               />
+              {!errors.password && (
+                <small style={{ color: '#718096' }}>
+                  A senha deve conter no mínimo 8 caracteres, 1 letra maiúscula, 1 número e 1 caractere especial.
+                </small>
+              )}
               {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
             </FormGroup>
 

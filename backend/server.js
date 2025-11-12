@@ -102,12 +102,118 @@ app.get('/admin/usuarios', verificarToken, verificarAdmin, async (req, res) => {
         role: true,
         empresa: true,
         telefone: true,
+        status: true,
       },
     });
     res.json(usuarios);
   } catch (err) {
     console.error('Erro ao buscar usuários:', err);
     res.status(500).json({ message: 'Erro ao buscar usuários' });
+  }
+});
+
+// Criar usuário (admin)
+app.post('/admin/usuarios', verificarToken, verificarAdmin, async (req, res) => {
+  let { email, name, empresa, password, telefone, role, status } = req.body;
+
+  email = validator.normalizeEmail(email || '');
+  name = validator.escape(name || '');
+  empresa = validator.escape(empresa || '');
+  telefone = validator.blacklist(telefone || '', '<>/"\'');
+  status = status && ['active', 'inactive'].includes(status) ? status : 'active';
+
+  if (!validator.isEmail(email)) {
+    return res.status(400).json({ error: 'Email inválido.' });
+  }
+  if (!name || !empresa) {
+    return res.status(400).json({ error: 'Nome e empresa são obrigatórios.' });
+  }
+  if (typeof password !== 'string' || password.trim() === '') {
+    return res.status(400).json({ error: 'Senha obrigatória.' });
+  }
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({
+      error: 'A senha deve ter no mínimo 8 caracteres, uma letra maiúscula, um número e um caractere especial (!@#$%).'
+    });
+  }
+  if (!role || !['admin', 'cliente'].includes(role)) {
+    role = 'cliente';
+  }
+
+  const hashedPassword = bcrypt.hashSync(password, 8);
+  try {
+    const novo = await prisma.user.create({
+      data: { email, name, empresa, telefone, password: hashedPassword, role, status }
+    });
+    res.status(201).json({ id: novo.id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Atualizar usuário (admin)
+app.put('/admin/usuarios/:id', verificarToken, verificarAdmin, async (req, res) => {
+  const { id } = req.params;
+  let { email, name, empresa, password, telefone, role, status } = req.body;
+
+  const data = {};
+  if (email) {
+    if (!validator.isEmail(email)) return res.status(400).json({ error: 'Email inválido.' });
+    data.email = validator.normalizeEmail(email);
+  }
+  if (name !== undefined) data.name = validator.escape(String(name));
+  if (empresa !== undefined) data.empresa = validator.escape(String(empresa));
+  if (telefone !== undefined) data.telefone = validator.blacklist(String(telefone), '<>/"\'');
+  if (role) {
+    if (!['admin', 'cliente'].includes(role)) return res.status(400).json({ error: 'Role inválida.' });
+    data.role = role;
+  }
+  if (status) {
+    if (!['active', 'inactive'].includes(status)) return res.status(400).json({ error: 'Status inválido.' });
+    data.status = status;
+  }
+  if (password) {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        error: 'A senha deve ter no mínimo 8 caracteres, uma letra maiúscula, um número e um caractere especial (!@#$%).'
+      });
+    }
+    data.password = bcrypt.hashSync(password, 8);
+  }
+
+  try {
+    const atualizado = await prisma.user.update({ where: { id }, data });
+    res.json({ id: atualizado.id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Alterar status (admin)
+app.patch('/admin/usuarios/:id', verificarToken, verificarAdmin, async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  if (!['active', 'inactive'].includes(status)) {
+    return res.status(400).json({ error: 'Status inválido.' });
+  }
+  try {
+    await prisma.user.update({ where: { id }, data: { status } });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Deletar usuário (admin)
+app.delete('/admin/usuarios/:id', verificarToken, verificarAdmin, async (req, res) => {
+  const { id } = req.params;
+  try {
+    await prisma.user.delete({ where: { id } });
+    res.status(204).send();
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao apagar usuário.' });
   }
 });
 
@@ -130,7 +236,7 @@ app.get('/usuarios', verificarToken, async (req, res) => {
 app.delete('/usuarios/:id', verificarToken, async (req, res) => {
   const { id } = req.params;
   try {
-    await prisma.user.delete({ where: { id: Number(id) } });
+    await prisma.user.delete({ where: { id } });
     res.status(204).send();
   } catch (err) {
     res.status(500).json({ error: 'Erro ao apagar usuário.' });
